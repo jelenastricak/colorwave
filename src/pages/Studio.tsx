@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { BottomWaveBackground } from "@/components/backgrounds/BottomWaveBackground";
 import { BrandCard } from "@/components/ui/brand-card";
 import { Button } from "@/components/ui/button";
@@ -37,6 +37,8 @@ interface BrandKit {
 const Studio = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const kitId = searchParams.get("id");
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [formData, setFormData] = useState({
@@ -50,6 +52,7 @@ const Studio = () => {
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [brandKit, setBrandKit] = useState<BrandKit | null>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   useEffect(() => {
     // Set up auth state listener
@@ -76,6 +79,43 @@ const Studio = () => {
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  // Load existing kit if ID is provided
+  useEffect(() => {
+    const loadKit = async () => {
+      if (!kitId || !user) return;
+
+      const { data, error } = await supabase
+        .from("brand_kits")
+        .select("*")
+        .eq("id", kitId)
+        .single();
+
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Failed to load brand kit.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (data) {
+        setBrandKit({
+          brandName: data.brand_name,
+          taglineOptions: data.tagline_options as string[],
+          positioning: data.positioning,
+          coreMessage: data.core_message,
+          toneOfVoice: data.tone_of_voice as string[],
+          colorPalette: data.color_palette as any,
+          typography: data.typography as any,
+          heroSection: data.hero_section as any,
+        });
+      }
+    };
+
+    loadKit();
+  }, [kitId, user, toast]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -134,24 +174,49 @@ const Studio = () => {
   const handleSave = async () => {
     if (brandKit && user) {
       try {
-        const { error } = await supabase.from("brand_kits").insert({
-          user_id: user.id,
-          brand_name: brandKit.brandName,
-          tagline_options: brandKit.taglineOptions,
-          positioning: brandKit.positioning,
-          core_message: brandKit.coreMessage,
-          tone_of_voice: brandKit.toneOfVoice,
-          color_palette: brandKit.colorPalette,
-          typography: brandKit.typography,
-          hero_section: brandKit.heroSection,
-        });
+        if (kitId) {
+          // Update existing kit
+          const { error } = await supabase
+            .from("brand_kits")
+            .update({
+              brand_name: brandKit.brandName,
+              tagline_options: brandKit.taglineOptions,
+              positioning: brandKit.positioning,
+              core_message: brandKit.coreMessage,
+              tone_of_voice: brandKit.toneOfVoice,
+              color_palette: brandKit.colorPalette,
+              typography: brandKit.typography,
+              hero_section: brandKit.heroSection,
+            })
+            .eq("id", kitId);
 
-        if (error) throw error;
+          if (error) throw error;
 
-        toast({
-          title: "Brand kit saved!",
-          description: "Your brand kit has been saved to your collection.",
-        });
+          toast({
+            title: "Changes saved!",
+            description: "Your brand kit has been updated.",
+          });
+        } else {
+          // Create new kit
+          const { error } = await supabase.from("brand_kits").insert({
+            user_id: user.id,
+            brand_name: brandKit.brandName,
+            tagline_options: brandKit.taglineOptions,
+            positioning: brandKit.positioning,
+            core_message: brandKit.coreMessage,
+            tone_of_voice: brandKit.toneOfVoice,
+            color_palette: brandKit.colorPalette,
+            typography: brandKit.typography,
+            hero_section: brandKit.heroSection,
+          });
+
+          if (error) throw error;
+
+          toast({
+            title: "Brand kit saved!",
+            description: "Your brand kit has been saved to your collection.",
+          });
+        }
       } catch (error) {
         console.error("Error saving brand kit:", error);
         toast({
@@ -160,6 +225,46 @@ const Studio = () => {
           variant: "destructive",
         });
       }
+    }
+  };
+
+  const handleRegenerateSection = async (section: string) => {
+    if (!brandKit) return;
+    
+    setIsGenerating(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-brand-kit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({ 
+          formData,
+          regenerateSection: section,
+          currentKit: brandKit 
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to regenerate section');
+      }
+
+      const { brandKit: updatedKit } = await response.json();
+      setBrandKit(updatedKit);
+      
+      toast({
+        title: "Section regenerated!",
+        description: `Your ${section} has been updated.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Regeneration failed",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -198,6 +303,11 @@ Body: ${brandKit.typography.bodyFont}
                 </Button>
               </Link>
               <div className="flex gap-2">
+                <Link to="/saved">
+                  <Button variant="outline" size="sm" rounded="pill">
+                    Saved Kits
+                  </Button>
+                </Link>
                 <Link to="/profile">
                   <Button variant="outline" size="sm" rounded="pill">
                     Profile
@@ -298,41 +408,132 @@ Body: ${brandKit.typography.bodyFont}
                   <div className="flex justify-between items-center">
                     <h2>Your brand kit</h2>
                     <div className="flex gap-2">
-                      <Button size="sm" variant="outline" onClick={() => setBrandKit(null)}>
-                        Regenerate
+                      <Button size="sm" variant="outline" onClick={() => setIsEditMode(!isEditMode)}>
+                        {isEditMode ? "View mode" : "Edit mode"}
                       </Button>
                       <Button size="sm" variant="outline" onClick={handleSave}>
-                        Save kit
+                        {kitId ? "Save changes" : "Save kit"}
                       </Button>
                       <Button size="sm" onClick={handleCopy}>
-                        Copy to clipboard
+                        Copy
                       </Button>
                     </div>
                   </div>
 
                   {/* Brand Overview */}
                   <BrandCard>
-                    <h3 className="text-2xl font-semibold mb-2">{brandKit.brandName}</h3>
-                    <p className="text-lg text-ink/80 mb-4">{brandKit.taglineOptions[0]}</p>
-                    <ul className="space-y-2 text-sm">
-                      <li>• {brandKit.positioning}</li>
-                      <li>• {brandKit.coreMessage}</li>
-                    </ul>
+                    <div className="flex justify-between items-start mb-4">
+                      <h3 className="text-xl font-semibold">Brand Overview</h3>
+                      {!isEditMode && (
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          onClick={() => handleRegenerateSection('overview')}
+                          disabled={isGenerating}
+                        >
+                          Regenerate
+                        </Button>
+                      )}
+                    </div>
+                    {isEditMode ? (
+                      <div className="space-y-4">
+                        <div>
+                          <Label>Brand Name</Label>
+                          <Input
+                            value={brandKit.brandName}
+                            onChange={(e) => setBrandKit({ ...brandKit, brandName: e.target.value })}
+                          />
+                        </div>
+                        <div>
+                          <Label>Tagline</Label>
+                          <Input
+                            value={brandKit.taglineOptions[0]}
+                            onChange={(e) => setBrandKit({ 
+                              ...brandKit, 
+                              taglineOptions: [e.target.value, ...brandKit.taglineOptions.slice(1)] 
+                            })}
+                          />
+                        </div>
+                        <div>
+                          <Label>Positioning</Label>
+                          <Textarea
+                            value={brandKit.positioning}
+                            onChange={(e) => setBrandKit({ ...brandKit, positioning: e.target.value })}
+                            rows={2}
+                          />
+                        </div>
+                        <div>
+                          <Label>Core Message</Label>
+                          <Textarea
+                            value={brandKit.coreMessage}
+                            onChange={(e) => setBrandKit({ ...brandKit, coreMessage: e.target.value })}
+                            rows={2}
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <h4 className="text-2xl font-semibold mb-2">{brandKit.brandName}</h4>
+                        <p className="text-lg text-ink/80 mb-4">{brandKit.taglineOptions[0]}</p>
+                        <ul className="space-y-2 text-sm">
+                          <li>• {brandKit.positioning}</li>
+                          <li>• {brandKit.coreMessage}</li>
+                        </ul>
+                      </>
+                    )}
                   </BrandCard>
 
                   {/* Color Palette */}
                   <BrandCard>
-                    <h3 className="text-xl font-semibold mb-4">Color palette</h3>
+                    <div className="flex justify-between items-start mb-4">
+                      <h3 className="text-xl font-semibold">Color palette</h3>
+                      {!isEditMode && (
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          onClick={() => handleRegenerateSection('colors')}
+                          disabled={isGenerating}
+                        >
+                          Regenerate
+                        </Button>
+                      )}
+                    </div>
                     <div className="grid grid-cols-5 gap-4">
-                      {brandKit.colorPalette.map((color) => (
+                      {brandKit.colorPalette.map((color, idx) => (
                         <div key={color.hex} className="space-y-2">
                           <div
                             className="h-24 rounded-lg"
                             style={{ backgroundColor: color.hex }}
                           />
-                          <p className="text-sm font-medium">{color.hex}</p>
-                          <p className="text-xs text-ink/60">{color.name}</p>
-                          <p className="text-xs text-ink/50">{color.usage}</p>
+                          {isEditMode ? (
+                            <>
+                              <Input
+                                value={color.hex}
+                                onChange={(e) => {
+                                  const newPalette = [...brandKit.colorPalette];
+                                  newPalette[idx] = { ...color, hex: e.target.value };
+                                  setBrandKit({ ...brandKit, colorPalette: newPalette });
+                                }}
+                                className="text-sm"
+                              />
+                              <Input
+                                value={color.name}
+                                onChange={(e) => {
+                                  const newPalette = [...brandKit.colorPalette];
+                                  newPalette[idx] = { ...color, name: e.target.value };
+                                  setBrandKit({ ...brandKit, colorPalette: newPalette });
+                                }}
+                                className="text-xs"
+                                placeholder="Color name"
+                              />
+                            </>
+                          ) : (
+                            <>
+                              <p className="text-sm font-medium">{color.hex}</p>
+                              <p className="text-xs text-ink/60">{color.name}</p>
+                              <p className="text-xs text-ink/50">{color.usage}</p>
+                            </>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -374,19 +575,80 @@ Body: ${brandKit.typography.bodyFont}
 
                   {/* Hero Section Draft */}
                   <BrandCard>
-                    <h3 className="text-xl font-semibold mb-4">Hero section draft</h3>
-                    <div className="space-y-4">
-                      <div>
-                        <p className="text-2xl font-semibold mb-2">{brandKit.heroSection.headline}</p>
-                        <p className="text-ink/70">{brandKit.heroSection.subheadline}</p>
-                      </div>
-                      <div className="flex gap-3">
-                        <Button rounded="pill">{brandKit.heroSection.primaryCTA}</Button>
-                        <Button variant="ghost" rounded="pill">
-                          {brandKit.heroSection.secondaryCTA}
+                    <div className="flex justify-between items-start mb-4">
+                      <h3 className="text-xl font-semibold">Hero section draft</h3>
+                      {!isEditMode && (
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          onClick={() => handleRegenerateSection('hero')}
+                          disabled={isGenerating}
+                        >
+                          Regenerate
                         </Button>
-                      </div>
+                      )}
                     </div>
+                    {isEditMode ? (
+                      <div className="space-y-4">
+                        <div>
+                          <Label>Headline</Label>
+                          <Textarea
+                            value={brandKit.heroSection.headline}
+                            onChange={(e) => setBrandKit({
+                              ...brandKit,
+                              heroSection: { ...brandKit.heroSection, headline: e.target.value }
+                            })}
+                            rows={2}
+                          />
+                        </div>
+                        <div>
+                          <Label>Subheadline</Label>
+                          <Textarea
+                            value={brandKit.heroSection.subheadline}
+                            onChange={(e) => setBrandKit({
+                              ...brandKit,
+                              heroSection: { ...brandKit.heroSection, subheadline: e.target.value }
+                            })}
+                            rows={2}
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <Label>Primary CTA</Label>
+                            <Input
+                              value={brandKit.heroSection.primaryCTA}
+                              onChange={(e) => setBrandKit({
+                                ...brandKit,
+                                heroSection: { ...brandKit.heroSection, primaryCTA: e.target.value }
+                              })}
+                            />
+                          </div>
+                          <div>
+                            <Label>Secondary CTA</Label>
+                            <Input
+                              value={brandKit.heroSection.secondaryCTA}
+                              onChange={(e) => setBrandKit({
+                                ...brandKit,
+                                heroSection: { ...brandKit.heroSection, secondaryCTA: e.target.value }
+                              })}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div>
+                          <p className="text-2xl font-semibold mb-2">{brandKit.heroSection.headline}</p>
+                          <p className="text-ink/70">{brandKit.heroSection.subheadline}</p>
+                        </div>
+                        <div className="flex gap-3">
+                          <Button rounded="pill">{brandKit.heroSection.primaryCTA}</Button>
+                          <Button variant="ghost" rounded="pill">
+                            {brandKit.heroSection.secondaryCTA}
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                   </BrandCard>
                 </div>
             ) : (
