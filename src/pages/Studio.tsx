@@ -13,7 +13,7 @@ import { exportBrandKitAsPDF } from "@/utils/exportBrandKit";
 import { LoadingSkeleton } from "@/components/LoadingSkeleton";
 import { exportAsCSS, exportAsTailwind } from "@/utils/exportColorFormats";
 import { extractColorsFromImage, extractColorsFromFile } from "@/utils/colorExtraction";
-import { Header } from "@/components/Header";
+import colorwaveLogo from "@/assets/colorwave-logo.png";
 
 interface BrandKit {
   id?: string;
@@ -424,7 +424,6 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
 
   return (
     <>
-      <Header />
       <BottomWaveBackground>
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 h-full">
         {/* Left Panel - Form */}
@@ -650,6 +649,12 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
 
         {/* Right Panel - Results */}
         <div className="space-y-6">
+          {/* Logo and Title */}
+          <div className="flex items-center gap-0">
+            <img src={colorwaveLogo} alt="Colorwave Studio" className="h-14 w-14" />
+            <span className="text-2xl font-semibold text-ink leading-none -translate-y-0.5">Colorwave Studio</span>
+          </div>
+          
           {variations.length > 0 ? (
             <>
               <div className="space-y-4">
