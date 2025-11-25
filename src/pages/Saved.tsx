@@ -28,8 +28,8 @@ const Saved = () => {
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 space-y-4">
           <Link to="/">
-            <Button variant="ghost" size="sm">
-              Back to home
+            <Button variant="outline" size="sm" rounded="pill">
+              ← Back to home
             </Button>
           </Link>
           <h1 className="text-4xl">Saved Brand Kits</h1>
@@ -66,6 +66,7 @@ const Saved = () => {
 
                 <Button
                   variant="outline"
+                  rounded="pill"
                   className="w-full"
                   onClick={() => navigate("/studio")}
                 >
