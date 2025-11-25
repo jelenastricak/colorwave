@@ -205,7 +205,7 @@ Body: ${brandKit.typography.bodyFont}
                 <Button type="submit" className="flex-1" rounded="pill" disabled={isGenerating}>
                   {isGenerating ? "Designing your colors and voice..." : "Generate brand kit"}
                 </Button>
-                <Button type="button" variant="ghost" onClick={handleClear}>
+                <Button type="button" variant="outline" onClick={handleClear}>
                   Clear form
                 </Button>
               </div>
