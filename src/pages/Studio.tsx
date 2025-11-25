@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, Upload, Link as LinkIcon } from "lucide-react";
 import { BottomWaveBackground } from "@/components/backgrounds/BottomWaveBackground";
 import { BrandCard } from "@/components/ui/brand-card";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { exportBrandKitAsPDF } from "@/utils/exportBrandKit";
 import { LoadingSkeleton } from "@/components/LoadingSkeleton";
 import { exportAsCSS, exportAsTailwind } from "@/utils/exportColorFormats";
+import { extractColorsFromImage, extractColorsFromFile } from "@/utils/colorExtraction";
 
 interface BrandKit {
   id?: string;
@@ -55,6 +56,10 @@ const Studio = () => {
   const [brandKit, setBrandKit] = useState<BrandKit | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [extractedColors, setExtractedColors] = useState<string[]>([]);
+  const [imageUrl, setImageUrl] = useState("");
+  const [isExtractingColors, setIsExtractingColors] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load existing kit from localStorage if ID is provided
   useEffect(() => {
@@ -67,6 +72,72 @@ const Studio = () => {
     }
   }, [kitId]);
 
+  const handleExtractFromUrl = async () => {
+    if (!imageUrl) {
+      toast({
+        title: "URL required",
+        description: "Please enter an image URL",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsExtractingColors(true);
+    try {
+      const colors = await extractColorsFromImage(imageUrl);
+      setExtractedColors(colors);
+      toast({
+        title: "Colors extracted!",
+        description: `Found ${colors.length} dominant colors`,
+      });
+    } catch (error) {
+      console.error('Error extracting colors:', error);
+      toast({
+        title: "Extraction failed",
+        description: "Failed to extract colors from image. Make sure the URL is a valid image.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsExtractingColors(false);
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid file",
+        description: "Please upload an image file",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsExtractingColors(true);
+    try {
+      const colors = await extractColorsFromFile(file);
+      setExtractedColors(colors);
+      toast({
+        title: "Colors extracted!",
+        description: `Found ${colors.length} dominant colors`,
+      });
+    } catch (error) {
+      console.error('Error extracting colors:', error);
+      toast({
+        title: "Extraction failed",
+        description: "Failed to extract colors from image.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsExtractingColors(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsGenerating(true);
@@ -78,7 +149,10 @@ const Studio = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ formData }),
+        body: JSON.stringify({ 
+          formData,
+          extractedColors: extractedColors.length > 0 ? extractedColors : undefined
+        }),
       });
 
       if (!response.ok) {
@@ -278,6 +352,75 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
                 <p className="text-sm sm:text-base text-ink/70">
                   Answer a few questions and let our AI create your brand identity.
                 </p>
+              </div>
+
+              {/* Color Import Section */}
+              <div className="border border-ink/10 rounded-lg p-4 space-y-4">
+                <div>
+                  <h3 className="font-medium mb-1 text-sm">Import colors (optional)</h3>
+                  <p className="text-xs text-ink/60">
+                    Extract colors from an existing brand or inspiration
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex gap-2">
+                    <Input
+                      type="url"
+                      placeholder="Paste image URL..."
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      onClick={handleExtractFromUrl}
+                      disabled={isExtractingColors || !imageUrl}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <LinkIcon className="w-4 h-4" />
+                    </Button>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="h-px flex-1 bg-ink/10" />
+                    <span className="text-xs text-ink/50">or</span>
+                    <div className="h-px flex-1 bg-ink/10" />
+                  </div>
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                  <Button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isExtractingColors}
+                    variant="outline"
+                    className="w-full"
+                    size="sm"
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    Upload screenshot
+                  </Button>
+
+                  {extractedColors.length > 0 && (
+                    <div className="flex gap-2 pt-2">
+                      {extractedColors.map((color, i) => (
+                        <div
+                          key={i}
+                          className="flex-1 h-12 rounded-lg border border-ink/20"
+                          style={{ backgroundColor: color }}
+                          title={color}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="space-y-4">

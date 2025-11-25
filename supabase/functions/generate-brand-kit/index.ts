@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { formData, regenerateSection, currentKit } = await req.json();
+    const { formData, regenerateSection, currentKit, extractedColors } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     
     if (!LOVABLE_API_KEY) {
@@ -166,6 +166,11 @@ Make it compelling and different from the current version.`;
     }
 
     // Generate full brand kit (original logic)
+    let colorConstraint = '';
+    if (extractedColors && extractedColors.length > 0) {
+      colorConstraint = `\n\nIMPORTANT: Use these extracted colors as the foundation for the color palette: ${extractedColors.join(', ')}. You must incorporate these colors into the palette, adjusting their usage and adding complementary colors if needed.`;
+    }
+
     systemPrompt = `You are a professional brand designer and strategist. Generate a comprehensive brand kit based on the user's input.
 
 Your response must be a valid JSON object with this exact structure:
@@ -195,7 +200,7 @@ Your response must be a valid JSON object with this exact structure:
   }
 }
 
-Generate colors that match the brand vibe. Be creative and thoughtful. Use actual hex codes.`;
+Generate colors that match the brand vibe. Be creative and thoughtful. Use actual hex codes.${colorConstraint}`;
 
     userPrompt = `Create a brand kit for:
 Project Name: ${formData.projectName || 'Unnamed Project'}
