@@ -102,7 +102,7 @@ const Landing = () => {
       </section>
 
       {/* Example Output Section */}
-      <section id="example" className="py-20 px-6 bg-canvas">
+      <section id="example" className="pt-10 pb-20 px-6 bg-canvas">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-center mb-12">Example output</h2>
           <BrandCard className="space-y-6">
