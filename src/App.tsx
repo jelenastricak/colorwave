@@ -7,6 +7,7 @@ import Landing from "./pages/Landing";
 import Studio from "./pages/Studio";
 import Saved from "./pages/Saved";
 import NotFound from "./pages/NotFound";
+import Auth from "./pages/Auth";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="/studio" element={<Studio />} />
           <Route path="/saved" element={<Saved />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

@@ -19,7 +19,7 @@ const Landing = () => {
               Colorwave Studio generates a mini brand kit—palette, fonts, copy—without any design skills.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link to="/studio">
+              <Link to="/auth">
                 <Button size="lg" rounded="pill">
                   Launch Colorwave Studio
                 </Button>
@@ -141,7 +141,7 @@ const Landing = () => {
       <BottomWaveBackground>
         <div className="text-center space-y-6">
           <h2 className="text-3xl">Ready to see your colors?</h2>
-          <Link to="/studio">
+          <Link to="/auth">
             <Button size="lg" rounded="pill">
               Open the Studio
             </Button>
