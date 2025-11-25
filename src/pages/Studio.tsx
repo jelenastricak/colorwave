@@ -125,11 +125,11 @@ Body: ${brandKit.typography.bodyFont}
   };
 
   return (
-    <div className="min-h-screen">
-      <SideWaveBackground>
-        <div className="grid lg:grid-cols-[40%_60%] min-h-screen">
-          {/* Form Panel */}
-          <div className="p-8 space-y-6 overflow-y-auto">
+    <div className="min-h-screen relative">
+      <div className="grid lg:grid-cols-[40%_60%] min-h-screen">
+        {/* Form Panel */}
+        <div className="p-8 space-y-6 overflow-y-auto bg-canvas relative z-10">
+          <SideWaveBackground>
             <div className="space-y-2">
               <h1 className="text-3xl">Colorwave Studio</h1>
               <p className="text-ink/70">You can tweak everything later—this is your starting point.</p>
@@ -210,13 +210,14 @@ Body: ${brandKit.typography.bodyFont}
                 </Button>
               </div>
             </form>
-          </div>
+          </SideWaveBackground>
+        </div>
 
-          {/* Results Panel */}
-          <div className="overflow-y-auto">
+        {/* Results Panel */}
+        <div className="overflow-y-auto relative">
+          <BottomWaveBackground>
             {brandKit ? (
-              <BottomWaveBackground>
-                <div className="space-y-6">
+              <div className="space-y-6">
                   <div className="flex justify-between items-center">
                     <h2>Your brand kit</h2>
                     <div className="flex gap-2">
@@ -309,9 +310,8 @@ Body: ${brandKit.typography.bodyFont}
                         </Button>
                       </div>
                     </div>
-                  </BrandCard>
+                   </BrandCard>
                 </div>
-              </BottomWaveBackground>
             ) : (
               <div className="flex items-center justify-center h-full p-8">
                 <div className="text-center space-y-4 max-w-md" style={{ marginLeft: '-6cm' }}>
@@ -322,9 +322,9 @@ Body: ${brandKit.typography.bodyFont}
                 </div>
               </div>
             )}
-          </div>
+          </BottomWaveBackground>
         </div>
-      </SideWaveBackground>
+      </div>
     </div>
   );
 };
