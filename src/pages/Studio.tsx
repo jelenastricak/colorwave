@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { exportBrandKitAsPDF } from "@/utils/exportBrandKit";
 import { LoadingSkeleton } from "@/components/LoadingSkeleton";
+import { exportAsCSS, exportAsTailwind } from "@/utils/exportColorFormats";
 
 interface BrandKit {
   id?: string;
@@ -229,6 +230,26 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
     toast({
       title: "Color copied!",
       description: `${colorName} (${hex}) copied to clipboard`,
+    });
+  };
+
+  const handleExportCSS = () => {
+    if (!brandKit) return;
+    const cssCode = exportAsCSS(brandKit.colorPalette, brandKit.brandName);
+    navigator.clipboard.writeText(cssCode);
+    toast({
+      title: "CSS Variables copied!",
+      description: "Paste into your CSS file",
+    });
+  };
+
+  const handleExportTailwind = () => {
+    if (!brandKit) return;
+    const tailwindConfig = exportAsTailwind(brandKit.colorPalette, brandKit.brandName);
+    navigator.clipboard.writeText(tailwindConfig);
+    toast({
+      title: "Tailwind config copied!",
+      description: "Paste into your tailwind.config.js",
     });
   };
 
@@ -536,15 +557,33 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
               <BrandCard className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <h3 className="text-xl sm:text-2xl font-semibold">Color Palette</h3>
-                  <Button
-                    onClick={() => handleRegenerateSection("colors")}
-                    variant="outline"
-                    size="sm"
-                    rounded="pill"
-                    disabled={isGenerating}
-                  >
-                    Regenerate Colors
-                  </Button>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      onClick={handleExportCSS}
+                      variant="outline"
+                      size="sm"
+                      rounded="pill"
+                    >
+                      Export CSS
+                    </Button>
+                    <Button
+                      onClick={handleExportTailwind}
+                      variant="outline"
+                      size="sm"
+                      rounded="pill"
+                    >
+                      Export Tailwind
+                    </Button>
+                    <Button
+                      onClick={() => handleRegenerateSection("colors")}
+                      variant="outline"
+                      size="sm"
+                      rounded="pill"
+                      disabled={isGenerating}
+                    >
+                      Regenerate Colors
+                    </Button>
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
                   {brandKit.colorPalette.map((color, index) => (
