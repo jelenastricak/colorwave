@@ -714,7 +714,7 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
                   size="sm"
                   rounded="pill"
                 >
-                  Export PDF
+                  Export Guidelines PDF
                 </Button>
                 <Button
                   onClick={handleCopy}
