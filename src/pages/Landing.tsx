@@ -3,7 +3,6 @@ import { TopWaveBackground } from "@/components/backgrounds/TopWaveBackground";
 import { BottomWaveBackground } from "@/components/backgrounds/BottomWaveBackground";
 import { BrandCard } from "@/components/ui/brand-card";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Palette, Download } from "lucide-react";
 
 const Landing = () => {
   return (
@@ -67,21 +66,18 @@ const Landing = () => {
           <h2 className="text-center mb-12">How it works</h2>
           <div className="grid gap-8 md:grid-cols-3">
             <BrandCard className="text-center">
-              <Sparkles className="mx-auto mb-4 h-10 w-10 text-ink" />
               <h3 className="font-semibold text-lg mb-2">Describe your project</h3>
               <p className="text-sm text-ink/70">
                 Tell us what you're building, who it's for, and the vibe you're going for.
               </p>
             </BrandCard>
             <BrandCard className="text-center">
-              <Palette className="mx-auto mb-4 h-10 w-10 text-ink" />
               <h3 className="font-semibold text-lg mb-2">Let AI generate your kit</h3>
               <p className="text-sm text-ink/70">
                 Our AI designs a cohesive brand kit in seconds—colors, fonts, and messaging.
               </p>
             </BrandCard>
             <BrandCard className="text-center">
-              <Download className="mx-auto mb-4 h-10 w-10 text-ink" />
               <h3 className="font-semibold text-lg mb-2">Copy, customize, and export</h3>
               <p className="text-sm text-ink/70">
                 Use your kit as-is or tweak it. Export everything you need to start building.
