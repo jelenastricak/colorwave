@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BrandCard } from "@/components/ui/brand-card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
 
 interface SavedKit {
   id: number;
@@ -30,7 +29,6 @@ const Saved = () => {
         <div className="mb-8 space-y-4">
           <Link to="/">
             <Button variant="ghost" size="sm">
-              <ArrowLeft className="mr-2 h-4 w-4" />
               Back to home
             </Button>
           </Link>
