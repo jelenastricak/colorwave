@@ -20,11 +20,11 @@ const Landing = () => {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <header className="absolute top-0 left-0 right-0 z-20 px-6 py-6">
+      <header className="absolute top-0 left-0 right-0 z-20 px-6 py-8">
         <div className="mx-auto max-w-7xl">
-          <Link to="/" className="flex items-center gap-3">
-            <img src={colorwaveLogo} alt="Colorwave Studio" className="h-12 w-12" />
-            <span className="text-xl font-semibold text-ink">Colorwave Studio</span>
+          <Link to="/" className="flex items-center gap-4">
+            <img src={colorwaveLogo} alt="Colorwave Studio" className="h-16 w-16" />
+            <span className="text-2xl font-semibold text-ink">Colorwave Studio</span>
           </Link>
         </div>
       </header>
