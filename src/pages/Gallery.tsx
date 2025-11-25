@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Sparkles } from "lucide-react";
+import { Header } from "@/components/Header";
 
 interface GalleryKit {
   id: string;
@@ -81,8 +82,10 @@ const Gallery = () => {
   };
 
   return (
-    <TopWaveBackground>
-      <div className="space-y-8">
+    <>
+      <Header />
+      <TopWaveBackground>
+        <div className="space-y-8">
         {/* Header */}
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -194,7 +197,8 @@ const Gallery = () => {
           </div>
         )}
       </div>
-    </TopWaveBackground>
+      </TopWaveBackground>
+    </>
   );
 };
 
