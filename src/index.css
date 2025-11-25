@@ -9,32 +9,32 @@ All colors MUST be HSL.
 @layer base {
   :root {
     /* Colorwave Studio Design System */
-    --canvas: 36 40% 95%;
+    --canvas: 45 54% 90%;
     --ink: 220 30% 15%;
     
-    --background: 36 40% 95%;
+    --background: 45 54% 90%;
     --foreground: 220 30% 15%;
 
-    --card: 36 40% 95%;
+    --card: 45 54% 90%;
     --card-foreground: 220 30% 15%;
 
-    --popover: 36 40% 95%;
+    --popover: 45 54% 90%;
     --popover-foreground: 220 30% 15%;
 
     --primary: 220 30% 15%;
-    --primary-foreground: 36 40% 95%;
+    --primary-foreground: 45 54% 90%;
 
-    --secondary: 36 30% 90%;
+    --secondary: 45 50% 85%;
     --secondary-foreground: 220 30% 15%;
 
-    --muted: 36 30% 92%;
+    --muted: 45 50% 88%;
     --muted-foreground: 220 20% 40%;
 
-    --accent: 36 30% 90%;
+    --accent: 45 50% 85%;
     --accent-foreground: 220 30% 15%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 36 40% 95%;
+    --destructive-foreground: 45 54% 90%;
 
     --border: 220 30% 15% / 0.25;
     --input: 220 30% 15% / 0.20;
