@@ -22,7 +22,7 @@ const Landing = () => {
       {/* Header */}
       <header className="absolute top-0 left-0 right-0 z-20 px-6 py-8">
         <div className="mx-auto max-w-7xl">
-          <Link to="/" className="flex items-center gap-3">
+          <Link to="/" className="inline-flex items-center gap-3 bg-canvas/95 backdrop-blur-sm px-6 py-3 rounded-full shadow-sm">
             <img src={colorwaveLogo} alt="Colorwave Studio" className="h-20 w-20" />
             <span className="text-3xl font-semibold text-ink">Colorwave Studio</span>
           </Link>
