@@ -14,7 +14,74 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      brand_kits: {
+        Row: {
+          brand_name: string
+          color_palette: Json
+          core_message: string
+          created_at: string
+          hero_section: Json
+          id: string
+          positioning: string
+          tagline_options: Json
+          tone_of_voice: Json
+          typography: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          brand_name: string
+          color_palette: Json
+          core_message: string
+          created_at?: string
+          hero_section: Json
+          id?: string
+          positioning: string
+          tagline_options: Json
+          tone_of_voice: Json
+          typography: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          brand_name?: string
+          color_palette?: Json
+          core_message?: string
+          created_at?: string
+          hero_section?: Json
+          id?: string
+          positioning?: string
+          tagline_options?: Json
+          tone_of_voice?: Json
+          typography?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_kits_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

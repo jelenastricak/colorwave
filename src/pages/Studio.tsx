@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { BottomWaveBackground } from "@/components/backgrounds/BottomWaveBackground";
 import { BrandCard } from "@/components/ui/brand-card";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { User, Session } from "@supabase/supabase-js";
 
 interface BrandKit {
   brandName: string;
@@ -34,6 +36,9 @@ interface BrandKit {
 
 const Studio = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [formData, setFormData] = useState({
     projectName: "",
     description: "",
@@ -45,6 +50,37 @@ const Studio = () => {
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [brandKit, setBrandKit] = useState<BrandKit | null>(null);
+
+  useEffect(() => {
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (!session?.user) {
+          navigate("/auth");
+        }
+      }
+    );
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      if (!session?.user) {
+        navigate("/auth");
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigate("/");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,15 +131,35 @@ const Studio = () => {
     });
   };
 
-  const handleSave = () => {
-    if (brandKit) {
-      const saved = JSON.parse(localStorage.getItem("savedKits") || "[]");
-      saved.push({ ...brandKit, id: Date.now() });
-      localStorage.setItem("savedKits", JSON.stringify(saved));
-      toast({
-        title: "Brand kit saved!",
-        description: "Your brand kit has been saved to your collection.",
-      });
+  const handleSave = async () => {
+    if (brandKit && user) {
+      try {
+        const { error } = await supabase.from("brand_kits").insert({
+          user_id: user.id,
+          brand_name: brandKit.brandName,
+          tagline_options: brandKit.taglineOptions,
+          positioning: brandKit.positioning,
+          core_message: brandKit.coreMessage,
+          tone_of_voice: brandKit.toneOfVoice,
+          color_palette: brandKit.colorPalette,
+          typography: brandKit.typography,
+          hero_section: brandKit.heroSection,
+        });
+
+        if (error) throw error;
+
+        toast({
+          title: "Brand kit saved!",
+          description: "Your brand kit has been saved to your collection.",
+        });
+      } catch (error) {
+        console.error("Error saving brand kit:", error);
+        toast({
+          title: "Save failed",
+          description: "Failed to save brand kit. Please try again.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -135,11 +191,16 @@ Body: ${brandKit.typography.bodyFont}
         <div className="grid lg:grid-cols-[40%_60%] min-h-screen">
           {/* Form Panel */}
           <div className="p-8 space-y-6 overflow-y-auto">
-            <Link to="/">
-              <Button variant="outline" size="sm" rounded="pill" className="mb-4">
-                ← Back to home
+            <div className="flex items-center justify-between gap-4 mb-4">
+              <Link to="/">
+                <Button variant="outline" size="sm" rounded="pill">
+                  ← Back to home
+                </Button>
+              </Link>
+              <Button variant="outline" size="sm" rounded="pill" onClick={handleSignOut}>
+                Sign out
               </Button>
-            </Link>
+            </div>
             
             <div className="space-y-2">
               <h1 className="text-3xl">Colorwave Studio</h1>
