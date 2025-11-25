@@ -432,11 +432,18 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
                 ← Back to home
               </Button>
             </Link>
-            <Link to="/saved">
-              <Button variant="outline" size="sm" rounded="pill">
-                View saved kits
-              </Button>
-            </Link>
+            <div className="flex gap-2">
+              <Link to="/saved">
+                <Button variant="outline" size="sm" rounded="pill">
+                  View saved kits
+                </Button>
+              </Link>
+              <Link to="/gallery">
+                <Button variant="outline" size="sm" rounded="pill">
+                  Browse Gallery
+                </Button>
+              </Link>
+            </div>
           </div>
 
           <BrandCard>

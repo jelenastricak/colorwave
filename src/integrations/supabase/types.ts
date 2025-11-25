@@ -20,6 +20,7 @@ export type Database = {
           color_palette: Json
           core_message: string
           created_at: string
+          featured: boolean | null
           hero_section: Json
           id: string
           is_public: boolean
@@ -30,12 +31,14 @@ export type Database = {
           typography: Json
           updated_at: string
           user_id: string
+          views_count: number | null
         }
         Insert: {
           brand_name: string
           color_palette: Json
           core_message: string
           created_at?: string
+          featured?: boolean | null
           hero_section: Json
           id?: string
           is_public?: boolean
@@ -46,12 +49,14 @@ export type Database = {
           typography: Json
           updated_at?: string
           user_id: string
+          views_count?: number | null
         }
         Update: {
           brand_name?: string
           color_palette?: Json
           core_message?: string
           created_at?: string
+          featured?: boolean | null
           hero_section?: Json
           id?: string
           is_public?: boolean
@@ -62,6 +67,7 @@ export type Database = {
           typography?: Json
           updated_at?: string
           user_id?: string
+          views_count?: number | null
         }
         Relationships: [
           {

@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "@/hooks/use-toast";
 import { exportBrandKitAsPDF } from "@/utils/exportBrandKit";
+import { supabase } from "@/integrations/supabase/client";
+import { Share2 } from "lucide-react";
 
 interface SavedKit {
   id: string;
@@ -44,6 +46,7 @@ interface SavedKit {
 const Saved = () => {
   const [savedKits, setSavedKits] = useState<SavedKit[]>([]);
   const [kitToDelete, setKitToDelete] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const kits = JSON.parse(localStorage.getItem("brandKits") || "[]");
@@ -65,14 +68,57 @@ const Saved = () => {
     setKitToDelete(null);
   };
 
+  const handleSubmitToGallery = async (kit: SavedKit) => {
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase
+        .from('brand_kits')
+        .insert({
+          brand_name: kit.brandName,
+          tagline_options: kit.taglineOptions,
+          positioning: kit.positioning,
+          core_message: kit.coreMessage,
+          tone_of_voice: kit.toneOfVoice,
+          color_palette: kit.colorPalette,
+          typography: kit.typography,
+          hero_section: kit.heroSection,
+          is_public: true,
+          user_id: '00000000-0000-0000-0000-000000000000', // Anonymous user ID
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Submitted to Gallery!",
+        description: "Your brand kit is now visible in the public gallery.",
+      });
+    } catch (error) {
+      console.error('Error submitting to gallery:', error);
+      toast({
+        title: "Submission failed",
+        description: "Failed to submit to gallery. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <SideWaveBackground>
       <div className="space-y-8">
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <Link to="/">
               <Button variant="outline" size="sm" rounded="pill">
                 ← Back to home
+              </Button>
+            </Link>
+            <Link to="/gallery">
+              <Button variant="outline" size="sm" rounded="pill">
+                Browse Gallery
               </Button>
             </Link>
           </div>
@@ -107,6 +153,17 @@ const Saved = () => {
                         View & Edit
                       </Button>
                     </Link>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      rounded="pill"
+                      onClick={() => handleSubmitToGallery(kit)}
+                      disabled={isSubmitting}
+                      className="whitespace-nowrap"
+                    >
+                      <Share2 className="w-3 h-3 mr-1" />
+                      {isSubmitting ? 'Submitting...' : 'Share to Gallery'}
+                    </Button>
                     <Button
                       size="sm"
                       variant="destructive"
