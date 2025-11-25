@@ -131,7 +131,7 @@ Body: ${brandKit.typography.bodyFont}
           {/* Form Panel */}
           <div className="p-8 space-y-6 overflow-y-auto">
             <Link to="/">
-              <Button variant="outline" size="sm" className="mb-4">
+              <Button variant="outline" size="sm" rounded="pill" className="mb-4">
                 ← Back to home
               </Button>
             </Link>
