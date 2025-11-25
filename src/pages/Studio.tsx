@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { SideWaveBackground } from "@/components/backgrounds/SideWaveBackground";
 import { BottomWaveBackground } from "@/components/backgrounds/BottomWaveBackground";
 import { BrandCard } from "@/components/ui/brand-card";
 import { Button } from "@/components/ui/button";
@@ -125,11 +124,11 @@ Body: ${brandKit.typography.bodyFont}
   };
 
   return (
-    <div className="min-h-screen relative">
-      <div className="grid lg:grid-cols-[40%_60%] min-h-screen">
-        {/* Form Panel */}
-        <div className="p-8 space-y-6 overflow-y-auto bg-canvas relative z-10">
-          <SideWaveBackground>
+    <BottomWaveBackground>
+      <div className="min-h-screen">
+        <div className="grid lg:grid-cols-[40%_60%] min-h-screen">
+          {/* Form Panel */}
+          <div className="p-8 space-y-6 overflow-y-auto">
             <div className="space-y-2">
               <h1 className="text-3xl">Colorwave Studio</h1>
               <p className="text-ink/70">You can tweak everything later—this is your starting point.</p>
@@ -210,14 +209,12 @@ Body: ${brandKit.typography.bodyFont}
                 </Button>
               </div>
             </form>
-          </SideWaveBackground>
-        </div>
+          </div>
 
-        {/* Results Panel */}
-        <div className="overflow-y-auto relative">
-          <BottomWaveBackground>
+          {/* Results Panel */}
+          <div className="overflow-y-auto">
             {brandKit ? (
-              <div className="space-y-6">
+              <div className="space-y-6 p-8">
                   <div className="flex justify-between items-center">
                     <h2>Your brand kit</h2>
                     <div className="flex gap-2">
@@ -310,7 +307,7 @@ Body: ${brandKit.typography.bodyFont}
                         </Button>
                       </div>
                     </div>
-                   </BrandCard>
+                  </BrandCard>
                 </div>
             ) : (
               <div className="flex items-center justify-center h-full p-8">
@@ -322,10 +319,10 @@ Body: ${brandKit.typography.bodyFont}
                 </div>
               </div>
             )}
-          </BottomWaveBackground>
+          </div>
         </div>
       </div>
-    </div>
+    </BottomWaveBackground>
   );
 };
 
