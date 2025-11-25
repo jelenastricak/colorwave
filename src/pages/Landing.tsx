@@ -25,7 +25,7 @@ const Landing = () => {
                   Launch Colorwave Studio
                 </Button>
               </Link>
-              <Button variant="ghost" size="lg" rounded="pill" onClick={() => {
+              <Button variant="outline" size="lg" rounded="pill" onClick={() => {
                 document.getElementById('example')?.scrollIntoView({ behavior: 'smooth' });
               }}>
                 View sample brand kit
