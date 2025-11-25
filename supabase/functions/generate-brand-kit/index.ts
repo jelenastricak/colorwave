@@ -1,10 +1,25 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Input validation schemas
+const FormDataSchema = z.object({
+  projectName: z.string().trim().min(1, "Project name is required").max(100, "Project name too long"),
+  description: z.string().trim().max(500, "Description too long").optional(),
+  targetAudience: z.string().trim().max(200, "Target audience too long").optional(),
+  brandVibe: z.string().trim().max(200, "Brand vibe too long").optional(),
+  industry: z.string().trim().max(100, "Industry too long").optional(),
+  keywords: z.string().trim().max(200, "Keywords too long").optional(),
+});
+
+const ExtractedColorsSchema = z.array(z.string().regex(/^#[0-9A-F]{6}$/i, "Invalid color format")).max(10, "Too many colors");
+const VariationSeedSchema = z.number().min(0).max(10).optional();
+const RegenerateSectionSchema = z.enum(['overview', 'colors', 'typography', 'voice', 'hero']).optional();
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -12,7 +27,40 @@ serve(async (req) => {
   }
 
   try {
-    const { formData, regenerateSection, currentKit, extractedColors, variationSeed, getSuggestions } = await req.json();
+    const requestBody = await req.json();
+    const { formData, regenerateSection, currentKit, extractedColors, variationSeed, getSuggestions } = requestBody;
+    
+    // Validate inputs
+    try {
+      if (formData) {
+        FormDataSchema.parse(formData);
+      }
+      if (extractedColors) {
+        ExtractedColorsSchema.parse(extractedColors);
+      }
+      if (variationSeed !== undefined) {
+        VariationSeedSchema.parse(variationSeed);
+      }
+      if (regenerateSection) {
+        RegenerateSectionSchema.parse(regenerateSection);
+      }
+    } catch (validationError) {
+      if (validationError instanceof z.ZodError) {
+        console.error('Input validation failed:', validationError.errors);
+        return new Response(
+          JSON.stringify({ 
+            error: 'Invalid input', 
+            details: validationError.errors[0]?.message || 'Validation failed'
+          }), 
+          {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          }
+        );
+      }
+      throw validationError;
+    }
+    
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     
     if (!LOVABLE_API_KEY) {
