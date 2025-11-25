@@ -16,16 +16,30 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "@/hooks/use-toast";
+import { exportBrandKitAsPDF } from "@/utils/exportBrandKit";
 
 interface SavedKit {
   id: string;
   brand_name: string;
   tagline_options: string[];
+  positioning: string;
+  core_message: string;
+  tone_of_voice: string[];
   color_palette: Array<{
     name: string;
     hex: string;
     usage: string;
   }>;
+  typography: {
+    headingFont: string;
+    bodyFont: string;
+    notes: string;
+  };
+  hero_section: {
+    headline: string;
+    subheadline: string;
+    ctas: string[];
+  };
   is_public: boolean;
   share_token: string | null;
   created_at: string;
@@ -174,6 +188,23 @@ const Saved = () => {
                       onClick={() => setKitToDelete(kit.id)}
                     >
                       Delete
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      rounded="pill"
+                      onClick={() => exportBrandKitAsPDF({
+                        brandName: kit.brand_name,
+                        taglineOptions: kit.tagline_options,
+                        positioning: kit.positioning,
+                        coreMessage: kit.core_message,
+                        toneOfVoice: kit.tone_of_voice,
+                        colorPalette: kit.color_palette,
+                        typography: kit.typography,
+                        heroSection: kit.hero_section,
+                      })}
+                    >
+                      Export PDF
                     </Button>
                   </div>
                 </BrandCard>
