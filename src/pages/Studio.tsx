@@ -429,7 +429,7 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
         {/* Left Panel - Form */}
         <div className="space-y-6">
           {/* Logo and Title */}
-          <div className="flex justify-start">
+          <div className="flex justify-center">
             <Link to="/" className="inline-flex items-center gap-0 bg-canvas/95 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-sm border border-ink/25">
               <img src={colorwaveLogo} alt="Colorwave Studio" className="h-14 w-14" />
               <span className="text-2xl font-semibold text-ink leading-none -translate-y-0.5">Colorwave Studio</span>
