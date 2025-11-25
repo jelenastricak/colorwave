@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { formData, regenerateSection, currentKit, extractedColors, variationSeed } = await req.json();
+    const { formData, regenerateSection, currentKit, extractedColors, variationSeed, getSuggestions } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     
     if (!LOVABLE_API_KEY) {
@@ -23,6 +23,94 @@ serve(async (req) => {
 
     let systemPrompt = '';
     let userPrompt = '';
+
+    // Handle AI suggestions request
+    if (getSuggestions && currentKit) {
+      systemPrompt = `You are a professional brand designer and strategist with expertise in current design trends and industry best practices.
+Analyze the provided brand kit and provide 5-7 specific, actionable improvement suggestions.
+
+Your response must be a valid JSON object with this exact structure:
+{
+  "suggestions": [
+    "specific actionable suggestion 1",
+    "specific actionable suggestion 2",
+    "specific actionable suggestion 3",
+    "specific actionable suggestion 4",
+    "specific actionable suggestion 5"
+  ]
+}
+
+Focus on:
+- Color accessibility and contrast ratios
+- Typography hierarchy and readability
+- Brand consistency and cohesiveness
+- Current design trends (2025)
+- Industry-specific best practices
+- Potential improvements in positioning or messaging
+- Opportunities to strengthen brand differentiation
+
+Be specific and actionable. Don't just say "improve colors" - explain exactly what to change and why.`;
+
+      userPrompt = `Analyze this brand kit and provide improvement suggestions:
+
+Brand Name: ${currentKit.brandName}
+Taglines: ${currentKit.taglineOptions.join(', ')}
+Positioning: ${currentKit.positioning}
+Core Message: ${currentKit.coreMessage}
+Tone of Voice: ${currentKit.toneOfVoice.join(', ')}
+Color Palette: ${currentKit.colorPalette.map((c: any) => `${c.name} (${c.hex}): ${c.usage}`).join(', ')}
+Typography: Heading - ${currentKit.typography.headingFont}, Body - ${currentKit.typography.bodyFont}
+Industry: ${formData?.industry || 'General'}
+Target Audience: ${formData?.targetAudience || 'General'}
+
+Provide specific, actionable suggestions for improvement.`;
+
+      const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+          ],
+          temperature: 0.7,
+        }),
+      });
+
+      if (!response.ok) {
+        if (response.status === 429) {
+          console.error('Rate limit exceeded');
+          return new Response(JSON.stringify({ error: 'Rate limit exceeded. Please try again in a moment.' }), {
+            status: 429,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+        if (response.status === 402) {
+          console.error('Payment required');
+          return new Response(JSON.stringify({ error: 'AI credits exhausted. Please add credits to continue.' }), {
+            status: 402,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+        const errorText = await response.text();
+        console.error('AI gateway error:', response.status, errorText);
+        throw new Error('AI gateway error');
+      }
+
+      const data = await response.json();
+      const content = data.choices[0].message.content;
+      const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+      const jsonStr = jsonMatch ? jsonMatch[1] : content;
+      const result = JSON.parse(jsonStr);
+
+      return new Response(JSON.stringify({ suggestions: result.suggestions }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
     if (regenerateSection && currentKit) {
       // Regenerate specific section
