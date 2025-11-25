@@ -224,6 +224,14 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
     });
   };
 
+  const handleCopyHex = (hex: string, colorName: string) => {
+    navigator.clipboard.writeText(hex);
+    toast({
+      title: "Color copied!",
+      description: `${colorName} (${hex}) copied to clipboard`,
+    });
+  };
+
   return (
     <BottomWaveBackground>
       <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 h-full">
@@ -587,7 +595,13 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
                       ) : (
                         <>
                           <p className="text-xs font-medium break-words">{color.name}</p>
-                          <p className="text-xs text-ink/70 font-mono break-words">{color.hex}</p>
+                          <p 
+                            className="text-xs text-ink/70 font-mono break-words cursor-pointer hover:text-ink transition-colors"
+                            onClick={() => handleCopyHex(color.hex, color.name)}
+                            title="Click to copy"
+                          >
+                            {color.hex}
+                          </p>
                           <p className="text-xs text-ink/60 break-words">{color.usage}</p>
                         </>
                       )}

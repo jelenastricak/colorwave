@@ -3,8 +3,19 @@ import { TopWaveBackground } from "@/components/backgrounds/TopWaveBackground";
 import { BottomWaveBackground } from "@/components/backgrounds/BottomWaveBackground";
 import { BrandCard } from "@/components/ui/brand-card";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 const Landing = () => {
+  const { toast } = useToast();
+
+  const handleCopyHex = (hex: string) => {
+    navigator.clipboard.writeText(hex);
+    toast({
+      title: "Color copied!",
+      description: `${hex} copied to clipboard`,
+    });
+  };
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -102,27 +113,57 @@ const Landing = () => {
               <div className="flex gap-3">
                 <div className="flex-1 space-y-1">
                   <div className="h-20 rounded-lg" style={{ backgroundColor: '#8B6F9F' }} />
-                  <p className="text-xs font-medium">#8B6F9F</p>
+                  <p 
+                    className="text-xs font-medium cursor-pointer hover:text-ink/80 transition-colors"
+                    onClick={() => handleCopyHex('#8B6F9F')}
+                    title="Click to copy"
+                  >
+                    #8B6F9F
+                  </p>
                   <p className="text-xs text-ink/60">Primary</p>
                 </div>
                 <div className="flex-1 space-y-1">
                   <div className="h-20 rounded-lg" style={{ backgroundColor: '#E8A87C' }} />
-                  <p className="text-xs font-medium">#E8A87C</p>
+                  <p 
+                    className="text-xs font-medium cursor-pointer hover:text-ink/80 transition-colors"
+                    onClick={() => handleCopyHex('#E8A87C')}
+                    title="Click to copy"
+                  >
+                    #E8A87C
+                  </p>
                   <p className="text-xs text-ink/60">Accent</p>
                 </div>
                 <div className="flex-1 space-y-1">
                   <div className="h-20 rounded-lg" style={{ backgroundColor: '#C9ADA7' }} />
-                  <p className="text-xs font-medium">#C9ADA7</p>
+                  <p 
+                    className="text-xs font-medium cursor-pointer hover:text-ink/80 transition-colors"
+                    onClick={() => handleCopyHex('#C9ADA7')}
+                    title="Click to copy"
+                  >
+                    #C9ADA7
+                  </p>
                   <p className="text-xs text-ink/60">Highlight</p>
                 </div>
                 <div className="flex-1 space-y-1">
                   <div className="h-20 rounded-lg" style={{ backgroundColor: '#2D3142' }} />
-                  <p className="text-xs font-medium">#2D3142</p>
+                  <p 
+                    className="text-xs font-medium cursor-pointer hover:text-ink/80 transition-colors"
+                    onClick={() => handleCopyHex('#2D3142')}
+                    title="Click to copy"
+                  >
+                    #2D3142
+                  </p>
                   <p className="text-xs text-ink/60">Text</p>
                 </div>
                 <div className="flex-1 space-y-1">
                   <div className="h-20 rounded-lg" style={{ backgroundColor: '#F4F4F4' }} />
-                  <p className="text-xs font-medium">#F4F4F4</p>
+                  <p 
+                    className="text-xs font-medium cursor-pointer hover:text-ink/80 transition-colors"
+                    onClick={() => handleCopyHex('#F4F4F4')}
+                    title="Click to copy"
+                  >
+                    #F4F4F4
+                  </p>
                   <p className="text-xs text-ink/60">Neutral</p>
                 </div>
               </div>
