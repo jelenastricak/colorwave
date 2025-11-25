@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Check, Copy } from "lucide-react";
 import { BottomWaveBackground } from "@/components/backgrounds/BottomWaveBackground";
 import { BrandCard } from "@/components/ui/brand-card";
 import { Button } from "@/components/ui/button";
@@ -53,6 +54,9 @@ const Studio = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [brandKit, setBrandKit] = useState<BrandKit | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isShared, setIsShared] = useState(false);
+  const [shareToken, setShareToken] = useState<string | null>(null);
+  const [copiedLink, setCopiedLink] = useState(false);
 
   useEffect(() => {
     // Set up auth state listener
@@ -111,6 +115,8 @@ const Studio = () => {
           typography: data.typography as any,
           heroSection: data.hero_section as any,
         });
+        setIsShared(data.is_public || false);
+        setShareToken(data.share_token || null);
       }
     };
 
@@ -168,6 +174,64 @@ const Studio = () => {
       brandVibe: "",
       industry: "",
       keywords: "",
+    });
+  };
+
+  const handleToggleShare = async () => {
+    if (!user || !kitId) return;
+
+    const newIsPublic = !isShared;
+    let token = shareToken;
+
+    // Generate token if sharing for the first time
+    if (newIsPublic && !token) {
+      const { data, error } = await supabase.rpc("generate_share_token");
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Failed to generate share link",
+          variant: "destructive",
+        });
+        return;
+      }
+      token = data;
+    }
+
+    const { error } = await supabase
+      .from("brand_kits")
+      .update({
+        is_public: newIsPublic,
+        share_token: token,
+      })
+      .eq("id", kitId);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update sharing settings",
+        variant: "destructive",
+      });
+    } else {
+      setIsShared(newIsPublic);
+      setShareToken(token);
+      toast({
+        title: newIsPublic ? "Sharing enabled" : "Sharing disabled",
+        description: newIsPublic
+          ? "Anyone with the link can now view this kit"
+          : "This kit is now private",
+      });
+    }
+  };
+
+  const handleCopyShareLink = () => {
+    if (!shareToken) return;
+    const shareUrl = `${window.location.origin}/share/${shareToken}`;
+    navigator.clipboard.writeText(shareUrl);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
+    toast({
+      title: "Link copied",
+      description: "Share link copied to clipboard",
     });
   };
 
@@ -318,6 +382,39 @@ Body: ${brandKit.typography.bodyFont}
                 </Button>
               </div>
             </div>
+            
+            {kitId && (
+              <div className="flex items-center gap-2 mb-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  rounded="pill"
+                  onClick={handleToggleShare}
+                >
+                  {isShared ? "Disable sharing" : "Enable sharing"}
+                </Button>
+                {isShared && shareToken && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    rounded="pill"
+                    onClick={handleCopyShareLink}
+                  >
+                    {copiedLink ? (
+                      <>
+                        <Check className="w-4 h-4 mr-1" />
+                        Copied
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-4 h-4 mr-1" />
+                        Copy link
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
+            )}
             
             <div className="space-y-2">
               <h1 className="text-3xl">Colorwave Studio</h1>

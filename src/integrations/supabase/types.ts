@@ -22,7 +22,9 @@ export type Database = {
           created_at: string
           hero_section: Json
           id: string
+          is_public: boolean
           positioning: string
+          share_token: string | null
           tagline_options: Json
           tone_of_voice: Json
           typography: Json
@@ -36,7 +38,9 @@ export type Database = {
           created_at?: string
           hero_section: Json
           id?: string
+          is_public?: boolean
           positioning: string
+          share_token?: string | null
           tagline_options: Json
           tone_of_voice: Json
           typography: Json
@@ -50,7 +54,9 @@ export type Database = {
           created_at?: string
           hero_section?: Json
           id?: string
+          is_public?: boolean
           positioning?: string
+          share_token?: string | null
           tagline_options?: Json
           tone_of_voice?: Json
           typography?: Json
@@ -87,7 +93,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      generate_share_token: { Args: never; Returns: string }
     }
     Enums: {
       [_ in never]: never
