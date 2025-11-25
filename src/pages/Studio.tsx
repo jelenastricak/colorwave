@@ -13,6 +13,7 @@ import { exportBrandKitAsPDF } from "@/utils/exportBrandKit";
 import { LoadingSkeleton } from "@/components/LoadingSkeleton";
 import { exportAsCSS, exportAsTailwind } from "@/utils/exportColorFormats";
 import { extractColorsFromImage, extractColorsFromFile } from "@/utils/colorExtraction";
+import { Header } from "@/components/Header";
 
 interface BrandKit {
   id?: string;
@@ -422,8 +423,10 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
   };
 
   return (
-    <BottomWaveBackground>
-      <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 h-full">
+    <>
+      <Header />
+      <BottomWaveBackground>
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 h-full">
         {/* Left Panel - Form */}
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -1192,7 +1195,8 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
           )}
         </div>
       </div>
-    </BottomWaveBackground>
+      </BottomWaveBackground>
+    </>
   );
 };
 

@@ -17,6 +17,7 @@ import { toast } from "@/hooks/use-toast";
 import { exportBrandKitAsPDF } from "@/utils/exportBrandKit";
 import { supabase } from "@/integrations/supabase/client";
 import { Share2 } from "lucide-react";
+import { Header } from "@/components/Header";
 
 interface SavedKit {
   id: string;
@@ -107,8 +108,10 @@ const Saved = () => {
   };
 
   return (
-    <SideWaveBackground>
-      <div className="space-y-8">
+    <>
+      <Header />
+      <SideWaveBackground>
+        <div className="space-y-8">
           <div className="space-y-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <Link to="/">
@@ -204,7 +207,8 @@ const Saved = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </SideWaveBackground>
+      </SideWaveBackground>
+    </>
   );
 };
 
