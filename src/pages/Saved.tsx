@@ -76,11 +76,18 @@ const Saved = () => {
     <SideWaveBackground>
       <div className="space-y-8">
         <div className="space-y-4">
-          <Link to="/">
-            <Button variant="outline" size="sm" rounded="pill">
-              ← Back to home
-            </Button>
-          </Link>
+          <div className="flex items-center justify-between">
+            <Link to="/">
+              <Button variant="outline" size="sm" rounded="pill">
+                ← Back to home
+              </Button>
+            </Link>
+            <Link to="/profile">
+              <Button variant="outline" size="sm" rounded="pill">
+                Profile
+              </Button>
+            </Link>
+          </div>
           
           <h1 className="text-3xl">Your saved brand kits</h1>
 

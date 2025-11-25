@@ -197,9 +197,16 @@ Body: ${brandKit.typography.bodyFont}
                   ← Back to home
                 </Button>
               </Link>
-              <Button variant="outline" size="sm" rounded="pill" onClick={handleSignOut}>
-                Sign out
-              </Button>
+              <div className="flex gap-2">
+                <Link to="/profile">
+                  <Button variant="outline" size="sm" rounded="pill">
+                    Profile
+                  </Button>
+                </Link>
+                <Button variant="outline" size="sm" rounded="pill" onClick={handleSignOut}>
+                  Sign out
+                </Button>
+              </div>
             </div>
             
             <div className="space-y-2">
