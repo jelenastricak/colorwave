@@ -26,6 +26,8 @@ interface SavedKit {
     hex: string;
     usage: string;
   }>;
+  is_public: boolean;
+  share_token: string | null;
   created_at: string;
 }
 
@@ -153,6 +155,12 @@ const Saved = () => {
                       />
                     ))}
                   </div>
+                  {kit.is_public && (
+                    <p className="text-xs text-ink/60 flex items-center gap-1">
+                      <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                      Shared publicly
+                    </p>
+                  )}
                   <div className="flex gap-2">
                     <Link to={`/studio?id=${kit.id}`}>
                       <Button size="sm" variant="outline" rounded="pill">
