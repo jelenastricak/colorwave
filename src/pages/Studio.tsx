@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { BottomWaveBackground } from "@/components/backgrounds/BottomWaveBackground";
 import { BrandCard } from "@/components/ui/brand-card";
 import { Button } from "@/components/ui/button";
@@ -129,6 +130,12 @@ Body: ${brandKit.typography.bodyFont}
         <div className="grid lg:grid-cols-[40%_60%] min-h-screen">
           {/* Form Panel */}
           <div className="p-8 space-y-6 overflow-y-auto">
+            <Link to="/">
+              <Button variant="ghost" size="sm" className="mb-4">
+                ← Back to home
+              </Button>
+            </Link>
+            
             <div className="space-y-2">
               <h1 className="text-3xl">Colorwave Studio</h1>
               <p className="text-ink/70">You can tweak everything later—this is your starting point.</p>
