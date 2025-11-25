@@ -95,10 +95,10 @@ const Share = () => {
   return (
     <TopWaveBackground>
       <div className="space-y-8">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl">Shared Brand Kit</h1>
-          <Link to="/">
-            <Button variant="outline" size="sm" rounded="pill">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <h1 className="text-2xl sm:text-3xl break-words">Shared Brand Kit</h1>
+          <Link to="/" className="w-full sm:w-auto">
+            <Button variant="outline" size="sm" rounded="pill" className="w-full sm:w-auto">
               Create your own
             </Button>
           </Link>
@@ -106,28 +106,28 @@ const Share = () => {
 
         <BrandCard className="space-y-6">
           <div>
-            <h2 className="text-2xl font-semibold mb-2">{kit.brand_name}</h2>
-            <p className="text-ink/70">{kit.tagline_options[0]}</p>
+            <h2 className="text-xl sm:text-2xl font-semibold mb-2 break-words">{kit.brand_name}</h2>
+            <p className="text-ink/70 break-words">{kit.tagline_options[0]}</p>
           </div>
 
           <div className="space-y-4">
             <div>
-              <h3 className="font-semibold mb-1">Positioning</h3>
-              <p className="text-ink/90">{kit.positioning}</p>
+              <h3 className="font-semibold mb-1 text-sm sm:text-base">Positioning</h3>
+              <p className="text-ink/90 break-words text-sm sm:text-base">{kit.positioning}</p>
             </div>
 
             <div>
-              <h3 className="font-semibold mb-1">Core Message</h3>
-              <p className="text-ink/90">{kit.core_message}</p>
+              <h3 className="font-semibold mb-1 text-sm sm:text-base">Core Message</h3>
+              <p className="text-ink/90 break-words text-sm sm:text-base">{kit.core_message}</p>
             </div>
 
             <div>
-              <h3 className="font-semibold mb-2">Tone of Voice</h3>
+              <h3 className="font-semibold mb-2 text-sm sm:text-base">Tone of Voice</h3>
               <div className="flex flex-wrap gap-2">
                 {kit.tone_of_voice.map((tone, idx) => (
                   <span
                     key={idx}
-                    className="px-3 py-1 bg-canvas/50 border border-ink/25 rounded-full text-sm"
+                    className="px-2 sm:px-3 py-1 bg-canvas/50 border border-ink/25 rounded-full text-xs sm:text-sm break-words"
                   >
                     {tone.adjective}
                   </span>
@@ -138,18 +138,18 @@ const Share = () => {
         </BrandCard>
 
         <BrandCard className="space-y-4">
-          <h3 className="text-xl font-semibold">Color Palette</h3>
+          <h3 className="text-lg sm:text-xl font-semibold">Color Palette</h3>
           <div className="grid gap-4">
             {kit.color_palette.map((color, idx) => (
-              <div key={idx} className="flex items-center gap-4">
+              <div key={idx} className="flex items-center gap-3 sm:gap-4">
                 <div
-                  className="w-16 h-16 rounded-lg border border-ink/25 flex-shrink-0"
+                  className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg border border-ink/25 flex-shrink-0"
                   style={{ backgroundColor: color.hex }}
                 />
-                <div className="flex-1">
-                  <p className="font-semibold">{color.name}</p>
-                  <p className="text-sm text-ink/70">{color.hex}</p>
-                  <p className="text-sm text-ink/60">{color.usage}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm sm:text-base break-words">{color.name}</p>
+                  <p className="text-xs sm:text-sm text-ink/70">{color.hex}</p>
+                  <p className="text-xs sm:text-sm text-ink/60 break-words">{color.usage}</p>
                 </div>
               </div>
             ))}
@@ -157,44 +157,44 @@ const Share = () => {
         </BrandCard>
 
         <BrandCard className="space-y-4">
-          <h3 className="text-xl font-semibold">Typography</h3>
+          <h3 className="text-lg sm:text-xl font-semibold">Typography</h3>
           <div className="space-y-3">
             <div>
-              <p className="text-sm text-ink/70">Heading Font</p>
-              <p className="font-semibold">{kit.typography.headingFont}</p>
+              <p className="text-xs sm:text-sm text-ink/70">Heading Font</p>
+              <p className="font-semibold text-sm sm:text-base break-words">{kit.typography.headingFont}</p>
             </div>
             <div>
-              <p className="text-sm text-ink/70">Body Font</p>
-              <p className="font-semibold">{kit.typography.bodyFont}</p>
+              <p className="text-xs sm:text-sm text-ink/70">Body Font</p>
+              <p className="font-semibold text-sm sm:text-base break-words">{kit.typography.bodyFont}</p>
             </div>
             {kit.typography.notes && (
               <div>
-                <p className="text-sm text-ink/70">Notes</p>
-                <p className="text-ink/90">{kit.typography.notes}</p>
+                <p className="text-xs sm:text-sm text-ink/70">Notes</p>
+                <p className="text-ink/90 text-sm sm:text-base break-words">{kit.typography.notes}</p>
               </div>
             )}
           </div>
         </BrandCard>
 
         <BrandCard className="space-y-4">
-          <h3 className="text-xl font-semibold">Hero Section</h3>
+          <h3 className="text-lg sm:text-xl font-semibold">Hero Section</h3>
           <div className="space-y-3">
             <div>
-              <p className="text-sm text-ink/70">Headline</p>
-              <p className="text-lg font-semibold">{kit.hero_section.headline}</p>
+              <p className="text-xs sm:text-sm text-ink/70">Headline</p>
+              <p className="text-base sm:text-lg font-semibold break-words">{kit.hero_section.headline}</p>
             </div>
             <div>
-              <p className="text-sm text-ink/70">Subheadline</p>
-              <p className="text-ink/90">{kit.hero_section.subheadline}</p>
+              <p className="text-xs sm:text-sm text-ink/70">Subheadline</p>
+              <p className="text-ink/90 text-sm sm:text-base break-words">{kit.hero_section.subheadline}</p>
             </div>
-            <div className="flex gap-4">
-              <div className="flex-1">
-                <p className="text-sm text-ink/70">Primary CTA</p>
-                <p className="text-ink/90">{kit.hero_section.primaryCTA}</p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm text-ink/70">Primary CTA</p>
+                <p className="text-ink/90 text-sm sm:text-base break-words">{kit.hero_section.primaryCTA}</p>
               </div>
-              <div className="flex-1">
-                <p className="text-sm text-ink/70">Secondary CTA</p>
-                <p className="text-ink/90">{kit.hero_section.secondaryCTA}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm text-ink/70">Secondary CTA</p>
+                <p className="text-ink/90 text-sm sm:text-base break-words">{kit.hero_section.secondaryCTA}</p>
               </div>
             </div>
           </div>
