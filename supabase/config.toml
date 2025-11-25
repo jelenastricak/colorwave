@@ -1,0 +1,4 @@
+project_id = "iqfrdwjkxbqqgxrwifyl"
+
+[functions.generate-brand-kit]
+verify_jwt = false
