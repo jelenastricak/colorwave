@@ -4,6 +4,7 @@ import { BottomWaveBackground } from "@/components/backgrounds/BottomWaveBackgro
 import { BrandCard } from "@/components/ui/brand-card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import colorwaveLogo from "@/assets/colorwave-logo.png";
 
 const Landing = () => {
   const { toast } = useToast();
@@ -18,6 +19,16 @@ const Landing = () => {
 
   return (
     <div className="min-h-screen">
+      {/* Header */}
+      <header className="absolute top-0 left-0 right-0 z-20 px-6 py-6">
+        <div className="mx-auto max-w-7xl">
+          <Link to="/" className="flex items-center gap-3">
+            <img src={colorwaveLogo} alt="Colorwave Studio" className="h-12 w-12" />
+            <span className="text-xl font-semibold text-ink">Colorwave Studio</span>
+          </Link>
+        </div>
+      </header>
+
       {/* Hero Section */}
       <TopWaveBackground>
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center pt-52">
