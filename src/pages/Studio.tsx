@@ -62,6 +62,8 @@ const Studio = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [comparisonMode, setComparisonMode] = useState(false);
   const [variations, setVariations] = useState<BrandKit[]>([]);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
 
   // Load existing kit from localStorage if ID is provided
   useEffect(() => {
@@ -376,6 +378,47 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
       title: "Tailwind config copied!",
       description: "Paste into your tailwind.config.js",
     });
+  };
+
+  const handleGetSuggestions = async () => {
+    if (!brandKit) return;
+    
+    setIsLoadingSuggestions(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-brand-kit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({ 
+          getSuggestions: true,
+          currentKit: brandKit,
+          formData
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get suggestions');
+      }
+
+      const { suggestions: newSuggestions } = await response.json();
+      setSuggestions(newSuggestions);
+      
+      toast({
+        title: "Suggestions ready!",
+        description: "Review AI-powered recommendations below.",
+      });
+    } catch (error) {
+      console.error('Error getting suggestions:', error);
+      toast({
+        title: "Failed to get suggestions",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoadingSuggestions(false);
+    }
   };
 
   return (
@@ -699,7 +742,43 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
                 >
                   {isEditMode ? "Done Editing" : "Edit Kit"}
                 </Button>
+                <Button
+                  onClick={handleGetSuggestions}
+                  variant="outline"
+                  size="sm"
+                  rounded="pill"
+                  disabled={isLoadingSuggestions}
+                >
+                  {isLoadingSuggestions ? "Loading..." : "Get AI Suggestions"}
+                </Button>
               </div>
+
+              {/* AI Suggestions */}
+              {suggestions.length > 0 && (
+                <BrandCard className="space-y-4 bg-accent/20">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h3 className="text-lg font-semibold">AI Improvement Suggestions</h3>
+                      <p className="text-sm text-ink/70">Based on design trends and best practices</p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSuggestions([])}
+                    >
+                      Dismiss
+                    </Button>
+                  </div>
+                  <ul className="space-y-3">
+                    {suggestions.map((suggestion, index) => (
+                      <li key={index} className="flex gap-3 text-sm">
+                        <span className="text-primary font-medium mt-0.5">•</span>
+                        <span className="flex-1 break-words">{suggestion}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </BrandCard>
+              )}
 
               {/* Brand Overview */}
               <BrandCard className="space-y-4">
