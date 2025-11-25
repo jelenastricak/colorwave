@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 
 interface BrandKit {
   brandName: string;
@@ -32,6 +33,7 @@ interface BrandKit {
 }
 
 const Studio = () => {
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     projectName: "",
     description: "",
@@ -48,41 +50,38 @@ const Studio = () => {
     e.preventDefault();
     setIsGenerating(true);
 
-    // Simulate AI generation for now
-    setTimeout(() => {
-      const mockKit: BrandKit = {
-        brandName: formData.projectName || "Your Brand",
-        taglineOptions: [
-          "Building the future, together",
-          "Innovation meets simplicity",
-          "Where ideas come to life",
-        ],
-        positioning: "A forward-thinking company that empowers businesses with cutting-edge solutions. We believe in making complex technology accessible and human-centered.",
-        coreMessage: "We help ambitious teams transform their ideas into reality through thoughtful design and innovative technology.",
-        toneOfVoice: ["Professional", "Approachable", "Innovative"],
-        colorPalette: [
-          { name: "Primary", hex: "#4A5568", usage: "Main brand color, headers" },
-          { name: "Accent 1", hex: "#667EEA", usage: "CTAs, interactive elements" },
-          { name: "Accent 2", hex: "#48BB78", usage: "Success states, highlights" },
-          { name: "Neutral 1", hex: "#2D3748", usage: "Body text" },
-          { name: "Neutral 2", hex: "#E2E8F0", usage: "Backgrounds, borders" },
-        ],
-        typography: {
-          headingFont: "Inter Semibold",
-          bodyFont: "Inter Regular",
-          notes: "Use Inter for a clean, modern look. Headings should be bold and impactful, while body text remains readable.",
+    try {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-brand-kit`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        heroSection: {
-          headline: "Transform Your Ideas Into Reality",
-          subheadline: "We provide the tools and expertise you need to build something remarkable.",
-          primaryCTA: "Get Started",
-          secondaryCTA: "Learn More",
-        },
-      };
+        body: JSON.stringify({ formData }),
+      });
 
-      setBrandKit(mockKit);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to generate brand kit');
+      }
+
+      const { brandKit: generatedKit } = await response.json();
+      setBrandKit(generatedKit);
+      
+      toast({
+        title: "Brand kit generated!",
+        description: "Your custom brand identity is ready.",
+      });
+    } catch (error) {
+      console.error('Error generating brand kit:', error);
+      toast({
+        title: "Generation failed",
+        description: error instanceof Error ? error.message : 'Failed to generate brand kit. Please try again.',
+        variant: "destructive",
+      });
+    } finally {
       setIsGenerating(false);
-    }, 2000);
+    }
   };
 
   const handleClear = () => {
@@ -101,7 +100,10 @@ const Studio = () => {
       const saved = JSON.parse(localStorage.getItem("savedKits") || "[]");
       saved.push({ ...brandKit, id: Date.now() });
       localStorage.setItem("savedKits", JSON.stringify(saved));
-      alert("Brand kit saved!");
+      toast({
+        title: "Brand kit saved!",
+        description: "Your brand kit has been saved to your collection.",
+      });
     }
   };
 
@@ -120,7 +122,10 @@ Body: ${brandKit.typography.bodyFont}
       `.trim();
 
       navigator.clipboard.writeText(text);
-      alert("Copied to clipboard!");
+      toast({
+        title: "Copied to clipboard!",
+        description: "Brand kit details have been copied.",
+      });
     }
   };
 
