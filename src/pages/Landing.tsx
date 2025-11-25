@@ -23,7 +23,7 @@ const Landing = () => {
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center pt-52">
           {/* Left Column */}
           <div className="space-y-6 text-left">
-            <h1 className="text-4xl lg:text-5xl font-semibold leading-tight">
+            <h1 className="text-3xl lg:text-4xl font-semibold leading-tight">
               Turn your idea into a brand in 60 seconds.
             </h1>
             <p className="text-lg text-ink/80">
