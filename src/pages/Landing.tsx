@@ -184,7 +184,7 @@ const Landing = () => {
       {/* Bottom CTA */}
       <BottomWaveBackground>
         <div className="text-center space-y-20 -mt-7">
-          <h2 className="text-3xl">Ready to see your colors?</h2>
+          <h2 className="text-3xl -mt-1">Ready to see your colors?</h2>
           <Link to="/studio">
             <Button size="lg" rounded="pill">
               Open the Studio
