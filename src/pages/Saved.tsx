@@ -5,6 +5,17 @@ import { BrandCard } from "@/components/ui/brand-card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { User, Session } from "@supabase/supabase-js";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "@/hooks/use-toast";
 
 interface SavedKit {
   id: string;
@@ -24,6 +35,7 @@ const Saved = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [savedKits, setSavedKits] = useState<SavedKit[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [kitToDelete, setKitToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     // Set up auth state listener
@@ -72,6 +84,30 @@ const Saved = () => {
     loadSavedKits();
   }, [user]);
 
+  const handleDelete = async () => {
+    if (!kitToDelete) return;
+
+    const { error } = await supabase
+      .from("brand_kits")
+      .delete()
+      .eq("id", kitToDelete);
+
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete brand kit. Please try again.",
+        variant: "destructive",
+      });
+    } else {
+      setSavedKits(savedKits.filter((kit) => kit.id !== kitToDelete));
+      toast({
+        title: "Success",
+        description: "Brand kit deleted successfully.",
+      });
+    }
+    setKitToDelete(null);
+  };
+
   return (
     <SideWaveBackground>
       <div className="space-y-8">
@@ -117,17 +153,42 @@ const Saved = () => {
                       />
                     ))}
                   </div>
-                  <Link to="/studio">
-                    <Button size="sm" variant="outline" rounded="pill">
-                      View details
+                  <div className="flex gap-2">
+                    <Link to="/studio">
+                      <Button size="sm" variant="outline" rounded="pill">
+                        View details
+                      </Button>
+                    </Link>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      rounded="pill"
+                      onClick={() => setKitToDelete(kit.id)}
+                    >
+                      Delete
                     </Button>
-                  </Link>
+                  </div>
                 </BrandCard>
               ))}
             </div>
           )}
         </div>
       </div>
+
+      <AlertDialog open={!!kitToDelete} onOpenChange={() => setKitToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Brand Kit</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this brand kit? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </SideWaveBackground>
   );
 };
