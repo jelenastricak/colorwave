@@ -75,7 +75,7 @@ const Landing = () => {
       </TopWaveBackground>
 
       {/* How It Works Section */}
-      <section className="py-20 px-6 bg-canvas">
+      <section className="pt-10 pb-20 px-6 bg-canvas">
         <div className="mx-auto max-w-7xl">
           <h2 className="text-center mb-12">How it works</h2>
           <div className="grid gap-8 md:grid-cols-3">
