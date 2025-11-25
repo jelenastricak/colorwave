@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { User, Session } from "@supabase/supabase-js";
+import { exportBrandKitAsPDF } from "@/utils/exportBrandKit";
 
 interface BrandKit {
   brandName: string;
@@ -510,6 +511,9 @@ Body: ${brandKit.typography.bodyFont}
                       </Button>
                       <Button size="sm" variant="outline" onClick={handleSave}>
                         {kitId ? "Save changes" : "Save kit"}
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => exportBrandKitAsPDF(brandKit)}>
+                        Export PDF
                       </Button>
                       <Button size="sm" onClick={handleCopy}>
                         Copy
