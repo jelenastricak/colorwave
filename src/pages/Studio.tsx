@@ -60,6 +60,8 @@ const Studio = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [isExtractingColors, setIsExtractingColors] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [comparisonMode, setComparisonMode] = useState(false);
+  const [variations, setVariations] = useState<BrandKit[]>([]);
 
   // Load existing kit from localStorage if ID is provided
   useEffect(() => {
@@ -143,30 +145,65 @@ const Studio = () => {
     setIsGenerating(true);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-brand-kit`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
-        body: JSON.stringify({ 
-          formData,
-          extractedColors: extractedColors.length > 0 ? extractedColors : undefined
-        }),
-      });
+      if (comparisonMode) {
+        // Generate 3 variations
+        const variationPromises = [1, 2, 3].map(async (i) => {
+          const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-brand-kit`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            },
+            body: JSON.stringify({ 
+              formData,
+              extractedColors: extractedColors.length > 0 ? extractedColors : undefined,
+              variationSeed: i
+            }),
+          });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to generate brand kit');
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to generate brand kit');
+          }
+
+          const { brandKit: generatedKit } = await response.json();
+          return generatedKit;
+        });
+
+        const generatedVariations = await Promise.all(variationPromises);
+        setVariations(generatedVariations);
+        
+        toast({
+          title: "Variations generated!",
+          description: "Compare and select your favorite.",
+        });
+      } else {
+        // Generate single kit
+        const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-brand-kit`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({ 
+            formData,
+            extractedColors: extractedColors.length > 0 ? extractedColors : undefined
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to generate brand kit');
+        }
+
+        const { brandKit: generatedKit } = await response.json();
+        setBrandKit(generatedKit);
+        
+        toast({
+          title: "Brand kit generated!",
+          description: "Your custom brand identity is ready.",
+        });
       }
-
-      const { brandKit: generatedKit } = await response.json();
-      setBrandKit(generatedKit);
-      
-      toast({
-        title: "Brand kit generated!",
-        description: "Your custom brand identity is ready.",
-      });
     } catch (error) {
       console.error('Error generating brand kit:', error);
       toast({
@@ -179,6 +216,16 @@ const Studio = () => {
     }
   };
 
+  const handleSelectVariation = (variation: BrandKit) => {
+    setBrandKit(variation);
+    setVariations([]);
+    setComparisonMode(false);
+    toast({
+      title: "Variation selected!",
+      description: "You can now edit and save this brand kit.",
+    });
+  };
+
   const handleClear = () => {
     setFormData({
       projectName: "",
@@ -188,6 +235,10 @@ const Studio = () => {
       industry: "",
       keywords: "",
     });
+    setExtractedColors([]);
+    setImageUrl("");
+    setVariations([]);
+    setComparisonMode(false);
   };
 
   const handleSave = () => {
@@ -516,8 +567,19 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
                   disabled={isGenerating}
                   rounded="pill"
                   className="flex-1 sm:flex-none"
+                  onClick={() => setComparisonMode(false)}
                 >
                   {isGenerating ? "Generating..." : "Generate Kit"}
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={isGenerating}
+                  rounded="pill"
+                  variant="outline"
+                  className="flex-1 sm:flex-none"
+                  onClick={() => setComparisonMode(true)}
+                >
+                  {isGenerating ? "Generating..." : "Generate 3 Variations"}
                 </Button>
                 <Button
                   type="button"
@@ -535,7 +597,50 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
 
         {/* Right Panel - Results */}
         <div className="space-y-6">
-          {isGenerating && !brandKit ? (
+          {variations.length > 0 ? (
+            <>
+              <div className="space-y-4">
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-semibold mb-2">Compare Variations</h2>
+                  <p className="text-sm text-ink/70">Click on a variation to select and edit it</p>
+                </div>
+                
+                <div className="grid gap-4">
+                  {variations.map((variation, index) => (
+                    <BrandCard 
+                      key={index}
+                      className="cursor-pointer transition-all hover:shadow-lg hover:scale-[1.02]"
+                      onClick={() => handleSelectVariation(variation)}
+                    >
+                      <div className="space-y-4">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <h3 className="text-lg font-semibold break-words">{variation.brandName}</h3>
+                            <p className="text-sm text-ink/70 break-words">{variation.taglineOptions[0]}</p>
+                          </div>
+                          <span className="text-xs bg-ink/10 px-2 py-1 rounded-full">Option {index + 1}</span>
+                        </div>
+                        
+                        <div className="flex gap-2">
+                          {variation.colorPalette.map((color, i) => (
+                            <div
+                              key={i}
+                              className="flex-1 h-12 rounded-lg"
+                              style={{ backgroundColor: color.hex }}
+                            />
+                          ))}
+                        </div>
+                        
+                        <div className="text-xs text-ink/60">
+                          <p className="line-clamp-2 break-words">{variation.positioning}</p>
+                        </div>
+                      </div>
+                    </BrandCard>
+                  ))}
+                </div>
+              </div>
+            </>
+          ) : isGenerating && !brandKit ? (
             <LoadingSkeleton />
           ) : !brandKit ? (
             <BrandCard className="h-full flex items-center justify-center p-12">

@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { formData, regenerateSection, currentKit, extractedColors } = await req.json();
+    const { formData, regenerateSection, currentKit, extractedColors, variationSeed } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     
     if (!LOVABLE_API_KEY) {
@@ -224,7 +224,7 @@ Generate a complete, cohesive brand identity.`;
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        temperature: 0.8,
+        temperature: 0.8 + (variationSeed ? variationSeed * 0.05 : 0),
       }),
     });
 
