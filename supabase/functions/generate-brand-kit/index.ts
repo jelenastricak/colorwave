@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { formData } = await req.json();
+    const { formData, regenerateSection, currentKit } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     
     if (!LOVABLE_API_KEY) {
@@ -21,7 +21,122 @@ serve(async (req) => {
 
     console.log('Generating brand kit for:', formData);
 
-    const systemPrompt = `You are a professional brand designer and strategist. Generate a comprehensive brand kit based on the user's input.
+    let systemPrompt = '';
+    let userPrompt = '';
+
+    if (regenerateSection && currentKit) {
+      // Regenerate specific section
+      switch (regenerateSection) {
+        case 'overview':
+          systemPrompt = `You are a professional brand designer. Regenerate only the brand overview section.
+Your response must be a valid JSON object with this exact structure:
+{
+  "brandName": "string",
+  "taglineOptions": ["string", "string", "string"],
+  "positioning": "string (2-3 sentences)",
+  "coreMessage": "string (2-3 sentences)"
+}`;
+          userPrompt = `Regenerate the brand overview for:
+Project Name: ${formData.projectName || currentKit.brandName}
+Description: ${formData.description || 'No description'}
+Target Audience: ${formData.targetAudience || 'General'}
+Brand Vibe: ${formData.brandVibe || 'Professional'}
+
+Current brand name: ${currentKit.brandName}
+Keep it fresh and different from the current version.`;
+          break;
+        
+        case 'colors':
+          systemPrompt = `You are a professional brand designer. Regenerate only the color palette.
+Your response must be a valid JSON object with this exact structure:
+{
+  "colorPalette": [
+    { "name": "Primary", "hex": "#HEXCODE", "usage": "description" },
+    { "name": "Accent 1", "hex": "#HEXCODE", "usage": "description" },
+    { "name": "Accent 2", "hex": "#HEXCODE", "usage": "description" },
+    { "name": "Neutral 1", "hex": "#HEXCODE", "usage": "description" },
+    { "name": "Neutral 2", "hex": "#HEXCODE", "usage": "description" }
+  ]
+}`;
+          userPrompt = `Create a new color palette for ${currentKit.brandName}.
+Brand Vibe: ${formData.brandVibe || 'Professional'}
+Industry: ${formData.industry || 'General'}
+
+Make it different from the current palette. Use actual hex codes.`;
+          break;
+        
+        case 'hero':
+          systemPrompt = `You are a professional copywriter. Regenerate only the hero section copy.
+Your response must be a valid JSON object with this exact structure:
+{
+  "heroSection": {
+    "headline": "string",
+    "subheadline": "string",
+    "primaryCTA": "string",
+    "secondaryCTA": "string"
+  }
+}`;
+          userPrompt = `Create new hero section copy for ${currentKit.brandName}.
+Tagline: ${currentKit.taglineOptions[0]}
+Core Message: ${currentKit.coreMessage}
+Target Audience: ${formData.targetAudience || 'General'}
+
+Make it compelling and different from the current version.`;
+          break;
+      }
+
+      const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+          ],
+          temperature: 0.9,
+        }),
+      });
+
+      if (!response.ok) {
+        if (response.status === 429) {
+          console.error('Rate limit exceeded');
+          return new Response(JSON.stringify({ error: 'Rate limit exceeded. Please try again in a moment.' }), {
+            status: 429,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+        if (response.status === 402) {
+          console.error('Payment required');
+          return new Response(JSON.stringify({ error: 'AI credits exhausted. Please add credits to continue.' }), {
+            status: 402,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+        const errorText = await response.text();
+        console.error('AI gateway error:', response.status, errorText);
+        throw new Error('AI gateway error');
+      }
+
+      const data = await response.json();
+      const content = data.choices[0].message.content;
+      const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+      const jsonStr = jsonMatch ? jsonMatch[1] : content;
+      const updatedSection = JSON.parse(jsonStr);
+
+      // Merge the updated section with the current kit
+      const brandKit = { ...currentKit, ...updatedSection };
+
+      return new Response(JSON.stringify({ brandKit }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Generate full brand kit (original logic)
+    systemPrompt = `You are a professional brand designer and strategist. Generate a comprehensive brand kit based on the user's input.
 
 Your response must be a valid JSON object with this exact structure:
 {
@@ -52,7 +167,7 @@ Your response must be a valid JSON object with this exact structure:
 
 Generate colors that match the brand vibe. Be creative and thoughtful. Use actual hex codes.`;
 
-    const userPrompt = `Create a brand kit for:
+    userPrompt = `Create a brand kit for:
 Project Name: ${formData.projectName || 'Unnamed Project'}
 Description: ${formData.description || 'No description provided'}
 Target Audience: ${formData.targetAudience || 'General audience'}

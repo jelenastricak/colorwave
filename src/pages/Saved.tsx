@@ -154,9 +154,9 @@ const Saved = () => {
                     ))}
                   </div>
                   <div className="flex gap-2">
-                    <Link to="/studio">
+                    <Link to={`/studio?id=${kit.id}`}>
                       <Button size="sm" variant="outline" rounded="pill">
-                        View details
+                        View & Edit
                       </Button>
                     </Link>
                     <Button
