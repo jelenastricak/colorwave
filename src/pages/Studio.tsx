@@ -314,7 +314,7 @@ Body: ${brandKit.typography.bodyFont}
               </BottomWaveBackground>
             ) : (
               <div className="flex items-center justify-center h-full p-8">
-                <div className="text-center space-y-4 max-w-md">
+                <div className="text-center space-y-4 max-w-md" style={{ marginLeft: '-2cm' }}>
                   <h3 className="text-2xl font-semibold">Ready when you are</h3>
                   <p className="text-ink/70">
                     Fill out the form and hit generate to see your brand kit come to life.
