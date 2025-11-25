@@ -39,9 +39,9 @@ const Landing = () => {
                 <h3 className="font-semibold text-xl">Luna Wellness</h3>
                 <p className="text-sm text-ink/70">Calm, grounded, empowering</p>
                 <div className="flex gap-2">
-                  <div className="h-8 w-8 rounded-full bg-[#6B8E9F]" />
-                  <div className="h-8 w-8 rounded-full bg-[#E8D5C4]" />
-                  <div className="h-8 w-8 rounded-full bg-[#F4A261]" />
+                  <div className="h-8 w-8 rounded-full" style={{ backgroundColor: '#6B8E9F' }} />
+                  <div className="h-8 w-8 rounded-full" style={{ backgroundColor: '#E8D5C4' }} />
+                  <div className="h-8 w-8 rounded-full" style={{ backgroundColor: '#F4A261' }} />
                 </div>
               </div>
             </BrandCard>
@@ -50,9 +50,9 @@ const Landing = () => {
                 <h3 className="font-semibold text-xl">Pulse Analytics</h3>
                 <p className="text-sm text-ink/70">Data-driven, innovative, precise</p>
                 <div className="flex gap-2">
-                  <div className="h-8 w-8 rounded-full bg-[#2D3E50]" />
-                  <div className="h-8 w-8 rounded-full bg-[#5D9CEC]" />
-                  <div className="h-8 w-8 rounded-full bg-[#48CFAD]" />
+                  <div className="h-8 w-8 rounded-full" style={{ backgroundColor: '#2D3E50' }} />
+                  <div className="h-8 w-8 rounded-full" style={{ backgroundColor: '#5D9CEC' }} />
+                  <div className="h-8 w-8 rounded-full" style={{ backgroundColor: '#48CFAD' }} />
                 </div>
               </div>
             </BrandCard>
@@ -101,27 +101,27 @@ const Landing = () => {
               <h4 className="font-medium mb-3">Color Palette</h4>
               <div className="flex gap-3">
                 <div className="flex-1 space-y-1">
-                  <div className="h-20 rounded-lg bg-[#8B6F9F]" />
+                  <div className="h-20 rounded-lg" style={{ backgroundColor: '#8B6F9F' }} />
                   <p className="text-xs font-medium">#8B6F9F</p>
                   <p className="text-xs text-ink/60">Primary</p>
                 </div>
                 <div className="flex-1 space-y-1">
-                  <div className="h-20 rounded-lg bg-[#E8A87C]" />
+                  <div className="h-20 rounded-lg" style={{ backgroundColor: '#E8A87C' }} />
                   <p className="text-xs font-medium">#E8A87C</p>
                   <p className="text-xs text-ink/60">Accent</p>
                 </div>
                 <div className="flex-1 space-y-1">
-                  <div className="h-20 rounded-lg bg-[#C9ADA7]" />
+                  <div className="h-20 rounded-lg" style={{ backgroundColor: '#C9ADA7' }} />
                   <p className="text-xs font-medium">#C9ADA7</p>
                   <p className="text-xs text-ink/60">Highlight</p>
                 </div>
                 <div className="flex-1 space-y-1">
-                  <div className="h-20 rounded-lg bg-[#2D3142]" />
+                  <div className="h-20 rounded-lg" style={{ backgroundColor: '#2D3142' }} />
                   <p className="text-xs font-medium">#2D3142</p>
                   <p className="text-xs text-ink/60">Text</p>
                 </div>
                 <div className="flex-1 space-y-1">
-                  <div className="h-20 rounded-lg bg-[#F4F4F4]" />
+                  <div className="h-20 rounded-lg" style={{ backgroundColor: '#F4F4F4' }} />
                   <p className="text-xs font-medium">#F4F4F4</p>
                   <p className="text-xs text-ink/60">Neutral</p>
                 </div>

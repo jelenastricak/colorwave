@@ -65,6 +65,36 @@ Industry: ${formData.industry || 'General'}
 Make it different from the current palette. Use actual hex codes.`;
           break;
         
+        case 'typography':
+          systemPrompt = `You are a professional brand designer. Regenerate only the typography section.
+Your response must be a valid JSON object with this exact structure:
+{
+  "typography": {
+    "headingFont": "Font name and weight",
+    "bodyFont": "Font name and weight",
+    "notes": "Usage guidelines (1-2 sentences)"
+  }
+}`;
+          userPrompt = `Create new typography recommendations for ${currentKit.brandName}.
+Brand Vibe: ${formData.brandVibe || 'Professional'}
+Industry: ${formData.industry || 'General'}
+
+Suggest real, accessible fonts. Make it different from the current selection.`;
+          break;
+        
+        case 'voice':
+          systemPrompt = `You are a professional brand strategist. Regenerate only the tone of voice.
+Your response must be a valid JSON object with this exact structure:
+{
+  "toneOfVoice": ["adjective1", "adjective2", "adjective3"]
+}`;
+          userPrompt = `Create new tone of voice adjectives for ${currentKit.brandName}.
+Brand Vibe: ${formData.brandVibe || 'Professional'}
+Target Audience: ${formData.targetAudience || 'General'}
+
+Provide 3 distinct adjectives that describe the brand voice. Make them different from the current ones.`;
+          break;
+        
         case 'hero':
           systemPrompt = `You are a professional copywriter. Regenerate only the hero section copy.
 Your response must be a valid JSON object with this exact structure:

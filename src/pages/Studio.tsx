@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { exportBrandKitAsPDF } from "@/utils/exportBrandKit";
+import { LoadingSkeleton } from "@/components/LoadingSkeleton";
 
 interface BrandKit {
   id?: string;
@@ -362,7 +363,9 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
 
         {/* Right Panel - Results */}
         <div className="space-y-6">
-          {!brandKit ? (
+          {isGenerating && !brandKit ? (
+            <LoadingSkeleton />
+          ) : !brandKit ? (
             <BrandCard className="h-full flex items-center justify-center p-12">
               <div className="text-center space-y-4">
                 <p className="text-ink/70 break-words">
