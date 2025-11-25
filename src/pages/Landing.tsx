@@ -20,7 +20,7 @@ const Landing = () => {
     <div className="min-h-screen">
       {/* Hero Section */}
       <TopWaveBackground>
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center pt-32">
+        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center pt-52">
           {/* Left Column */}
           <div className="space-y-6 text-left">
             <h1 className="text-4xl lg:text-5xl font-semibold leading-tight">
