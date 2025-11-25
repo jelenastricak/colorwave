@@ -650,12 +650,12 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
         {/* Right Panel - Results */}
         <div className="space-y-6">
           {/* Logo and Title */}
-          <BrandCard>
-            <div className="flex items-center gap-0">
+          <div className="flex justify-end">
+            <div className="inline-flex items-center gap-0 bg-canvas/95 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-sm">
               <img src={colorwaveLogo} alt="Colorwave Studio" className="h-14 w-14" />
               <span className="text-2xl font-semibold text-ink leading-none -translate-y-0.5">Colorwave Studio</span>
             </div>
-          </BrandCard>
+          </div>
           
           {variations.length > 0 ? (
             <>
