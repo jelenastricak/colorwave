@@ -293,8 +293,29 @@ Make it compelling and different from the current version.`;
       const jsonStr = jsonMatch ? jsonMatch[1] : content;
       const updatedSection = JSON.parse(jsonStr);
 
-      // Merge the updated section with the current kit
-      const brandKit = { ...currentKit, ...updatedSection };
+      // Merge only the specific fields that should be updated for this section
+      let brandKit = { ...currentKit };
+      
+      switch (regenerateSection) {
+        case 'overview':
+          if (updatedSection.brandName) brandKit.brandName = updatedSection.brandName;
+          if (updatedSection.taglineOptions) brandKit.taglineOptions = updatedSection.taglineOptions;
+          if (updatedSection.positioning) brandKit.positioning = updatedSection.positioning;
+          if (updatedSection.coreMessage) brandKit.coreMessage = updatedSection.coreMessage;
+          break;
+        case 'colors':
+          if (updatedSection.colorPalette) brandKit.colorPalette = updatedSection.colorPalette;
+          break;
+        case 'typography':
+          if (updatedSection.typography) brandKit.typography = updatedSection.typography;
+          break;
+        case 'voice':
+          if (updatedSection.toneOfVoice) brandKit.toneOfVoice = updatedSection.toneOfVoice;
+          break;
+        case 'hero':
+          if (updatedSection.heroSection) brandKit.heroSection = updatedSection.heroSection;
+          break;
+      }
 
       return new Response(JSON.stringify({ brandKit }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
