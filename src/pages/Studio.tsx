@@ -244,6 +244,43 @@ const Studio = () => {
     setComparisonMode(false);
   };
 
+  const handleAIFill = () => {
+    const samples = [
+      {
+        projectName: "Luna Wellness",
+        description: "A meditation app for busy professionals seeking mindful moments throughout their day",
+        targetAudience: "Working professionals aged 25-40",
+        brandVibe: "Calm, modern, trustworthy",
+        industry: "Health & wellness",
+        keywords: "mindfulness, balance, energy"
+      },
+      {
+        projectName: "Horizon Coffee Co.",
+        description: "Artisanal coffee roasters bringing ethically sourced beans to conscious consumers",
+        targetAudience: "Coffee enthusiasts and eco-conscious millennials",
+        brandVibe: "Warm, authentic, sustainable",
+        industry: "Food & beverage",
+        keywords: "organic, crafted, community"
+      },
+      {
+        projectName: "Pixel Studios",
+        description: "Creative design agency specializing in bold brand identities for startups",
+        targetAudience: "Tech startups and entrepreneurs",
+        brandVibe: "Innovative, bold, playful",
+        industry: "Design & creative",
+        keywords: "creativity, vision, impact"
+      }
+    ];
+    
+    const randomSample = samples[Math.floor(Math.random() * samples.length)];
+    setFormData(randomSample);
+    
+    toast({
+      title: "Form auto-filled!",
+      description: "AI generated sample data. Edit as needed.",
+    });
+  };
+
   const handleSave = () => {
     if (brandKit) {
       const savedKits = JSON.parse(localStorage.getItem("brandKits") || "[]");
@@ -450,11 +487,23 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
 
           <BrandCard>
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-semibold mb-2 break-words">Generate your brand kit</h1>
-                <p className="text-sm sm:text-base text-ink/70">
-                  Answer a few questions and let our AI create your brand identity.
-                </p>
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1">
+                  <h1 className="text-2xl sm:text-3xl font-semibold mb-2 break-words">Generate your brand kit</h1>
+                  <p className="text-sm sm:text-base text-ink/70">
+                    Answer a few questions and let our AI create your brand identity.
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  onClick={handleAIFill}
+                  variant="outline"
+                  size="sm"
+                  rounded="pill"
+                  className="shrink-0"
+                >
+                  AI Fill
+                </Button>
               </div>
 
               {/* Color Import Section */}
