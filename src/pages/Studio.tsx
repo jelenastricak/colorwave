@@ -65,6 +65,8 @@ const Studio = () => {
   const [variations, setVariations] = useState<BrandKit[]>([]);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
+  const [previousBrandKit, setPreviousBrandKit] = useState<BrandKit | null>(null);
+  const [lastRegeneratedSection, setLastRegeneratedSection] = useState<string | null>(null);
 
   // Load existing kit from localStorage if ID is provided
   useEffect(() => {
@@ -312,6 +314,10 @@ const Studio = () => {
   const handleRegenerateSection = async (section: string) => {
     if (!brandKit) return;
     
+    // Save current state before regenerating
+    setPreviousBrandKit({ ...brandKit });
+    setLastRegeneratedSection(section);
+    
     setIsGenerating(true);
     try {
       const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-brand-kit`, {
@@ -348,6 +354,19 @@ const Studio = () => {
     } finally {
       setIsGenerating(false);
     }
+  };
+
+  const handleUndoRegeneration = () => {
+    if (!previousBrandKit) return;
+    
+    setBrandKit(previousBrandKit);
+    setPreviousBrandKit(null);
+    setLastRegeneratedSection(null);
+    
+    toast({
+      title: "Undone!",
+      description: "Restored previous version.",
+    });
   };
 
   const handleCopy = () => {
@@ -928,15 +947,27 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
                   </div>
                 </div>
 
-                <Button
-                  onClick={() => handleRegenerateSection("overview")}
-                  variant="outline"
-                  size="sm"
-                  rounded="pill"
-                  disabled={isGenerating}
-                >
-                  Regenerate Overview
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    onClick={() => handleRegenerateSection("overview")}
+                    variant="outline"
+                    size="sm"
+                    rounded="pill"
+                    disabled={isGenerating}
+                  >
+                    Regenerate Overview
+                  </Button>
+                  {previousBrandKit && lastRegeneratedSection === "overview" && (
+                    <Button
+                      onClick={handleUndoRegeneration}
+                      variant="ghost"
+                      size="sm"
+                      rounded="pill"
+                    >
+                      Undo
+                    </Button>
+                  )}
+                </div>
               </BrandCard>
 
               {/* Color Palette */}
@@ -969,6 +1000,16 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
                     >
                       Regenerate Colors
                     </Button>
+                    {previousBrandKit && lastRegeneratedSection === "colors" && (
+                      <Button
+                        onClick={handleUndoRegeneration}
+                        variant="ghost"
+                        size="sm"
+                        rounded="pill"
+                      >
+                        Undo
+                      </Button>
+                    )}
                   </div>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
@@ -1039,15 +1080,27 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
               <BrandCard className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <h3 className="text-xl sm:text-2xl font-semibold">Typography</h3>
-                  <Button
-                    onClick={() => handleRegenerateSection("typography")}
-                    variant="outline"
-                    size="sm"
-                    rounded="pill"
-                    disabled={isGenerating}
-                  >
-                    Regenerate Typography
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => handleRegenerateSection("typography")}
+                      variant="outline"
+                      size="sm"
+                      rounded="pill"
+                      disabled={isGenerating}
+                    >
+                      Regenerate Typography
+                    </Button>
+                    {previousBrandKit && lastRegeneratedSection === "typography" && (
+                      <Button
+                        onClick={handleUndoRegeneration}
+                        variant="ghost"
+                        size="sm"
+                        rounded="pill"
+                      >
+                        Undo
+                      </Button>
+                    )}
+                  </div>
                 </div>
                 <div className="space-y-3">
                   {isEditMode ? (
@@ -1120,15 +1173,27 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
               <BrandCard className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <h3 className="text-xl sm:text-2xl font-semibold">Brand Voice</h3>
-                  <Button
-                    onClick={() => handleRegenerateSection("voice")}
-                    variant="outline"
-                    size="sm"
-                    rounded="pill"
-                    disabled={isGenerating}
-                  >
-                    Regenerate Voice
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => handleRegenerateSection("voice")}
+                      variant="outline"
+                      size="sm"
+                      rounded="pill"
+                      disabled={isGenerating}
+                    >
+                      Regenerate Voice
+                    </Button>
+                    {previousBrandKit && lastRegeneratedSection === "voice" && (
+                      <Button
+                        onClick={handleUndoRegeneration}
+                        variant="ghost"
+                        size="sm"
+                        rounded="pill"
+                      >
+                        Undo
+                      </Button>
+                    )}
+                  </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {brandKit.toneOfVoice.map((tone, index) => (
@@ -1146,15 +1211,27 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
               <BrandCard className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <h3 className="text-xl sm:text-2xl font-semibold">Hero section draft</h3>
-                  <Button
-                    onClick={() => handleRegenerateSection("hero")}
-                    variant="outline"
-                    size="sm"
-                    rounded="pill"
-                    disabled={isGenerating}
-                  >
-                    Regenerate Hero
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => handleRegenerateSection("hero")}
+                      variant="outline"
+                      size="sm"
+                      rounded="pill"
+                      disabled={isGenerating}
+                    >
+                      Regenerate Hero
+                    </Button>
+                    {previousBrandKit && lastRegeneratedSection === "hero" && (
+                      <Button
+                        onClick={handleUndoRegeneration}
+                        variant="ghost"
+                        size="sm"
+                        rounded="pill"
+                      >
+                        Undo
+                      </Button>
+                    )}
+                  </div>
                 </div>
                 <div className="space-y-3">
                   {isEditMode ? (
