@@ -183,13 +183,27 @@ const Landing = () => {
 
       {/* Bottom CTA */}
       <BottomWaveBackground>
-        <div className="text-center space-y-12 sm:space-y-20 -mt-4 sm:-mt-7">
-          
+        <div className="text-center space-y-6 sm:space-y-8 -mt-4 sm:-mt-7">
           <Link to="/studio">
             <Button size="lg" rounded="pill" className="w-full sm:w-auto">
               Open the Studio
             </Button>
           </Link>
+          
+          {/* Footer */}
+          <div className="pt-8 sm:pt-12 border-t border-ink/10">
+            <div className="flex flex-wrap justify-center gap-4 sm:gap-8 text-sm text-ink/60">
+              <Link to="/gallery" className="hover:text-ink transition-colors">
+                Gallery
+              </Link>
+              <Link to="/saved" className="hover:text-ink transition-colors">
+                Saved Kits
+              </Link>
+              <Link to="/install" className="hover:text-ink transition-colors">
+                Install App
+              </Link>
+            </div>
+          </div>
         </div>
       </BottomWaveBackground>
     </div>;
