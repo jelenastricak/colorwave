@@ -21,23 +21,23 @@ const Landing = () => {
 
       {/* Hero Section */}
       <TopWaveBackground>
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-center pt-52">
+        <div className="grid gap-8 sm:gap-12 lg:grid-cols-2 lg:gap-16 items-center pt-32 sm:pt-40 lg:pt-52">
           {/* Left Column */}
-          <div className="space-y-6 text-left">
-            <h1 className="text-3xl lg:text-4xl font-semibold leading-tight">
+          <div className="space-y-4 sm:space-y-6 text-left">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-semibold leading-tight">
               Turn your idea into a brand in 60 seconds.
             </h1>
-            <p className="text-lg text-ink/80">
+            <p className="text-base sm:text-lg text-ink/80">
               Colorwave Studio generates a mini brand kit—palette, fonts, copy—without any design skills.
             </p>
-            <div className="flex flex-wrap gap-4">
-              <Link to="/studio">
-                <Button size="lg" rounded="pill">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
+              <Link to="/studio" className="w-full sm:w-auto">
+                <Button size="lg" rounded="pill" className="w-full sm:w-auto">
                   Launch Colorwave Studio
                 </Button>
               </Link>
-              <Link to="/gallery">
-                <Button variant="outline" size="lg" rounded="pill">
+              <Link to="/gallery" className="w-full sm:w-auto">
+                <Button variant="outline" size="lg" rounded="pill" className="w-full sm:w-auto">
                   Browse Gallery
                 </Button>
               </Link>
@@ -85,10 +85,10 @@ const Landing = () => {
       </TopWaveBackground>
 
       {/* How It Works Section */}
-      <section className="pt-16 pb-20 px-6 bg-canvas">
+      <section className="pt-12 sm:pt-16 pb-16 sm:pb-20 px-4 sm:px-6 bg-canvas">
         <div className="mx-auto max-w-7xl">
-          <h2 className="text-center mb-12">How it works</h2>
-          <div className="grid gap-8 md:grid-cols-3">
+          <h2 className="text-center mb-8 sm:mb-12 text-xl sm:text-2xl">How it works</h2>
+          <div className="grid gap-6 sm:gap-8 md:grid-cols-3">
             <BrandCard className="text-center">
               <h3 className="font-semibold text-lg mb-2">Describe your project</h3>
               <p className="text-sm text-ink/70">
@@ -112,59 +112,59 @@ const Landing = () => {
       </section>
 
       {/* Example Output Section */}
-      <section id="example" className="pt-10 pb-20 px-6 bg-canvas">
+      <section id="example" className="pt-8 sm:pt-10 pb-16 sm:pb-20 px-4 sm:px-6 bg-canvas">
         <div className="mx-auto max-w-4xl">
-          <h2 className="text-center mb-12">Example output</h2>
-          <BrandCard className="space-y-6">
+          <h2 className="text-center mb-8 sm:mb-12 text-xl sm:text-2xl">Example output</h2>
+          <BrandCard className="space-y-4 sm:space-y-6">
             <div>
-              <h3 className="font-semibold text-2xl mb-2">Bloom Coaching</h3>
-              <p className="text-ink/70">Helping ambitious women grow their careers with confidence</p>
+              <h3 className="font-semibold text-xl sm:text-2xl mb-2">Bloom Coaching</h3>
+              <p className="text-sm sm:text-base text-ink/70">Helping ambitious women grow their careers with confidence</p>
             </div>
             
             <div>
-              <h4 className="font-medium mb-3">Color Palette</h4>
-              <div className="flex gap-3">
-                <div className="flex-1 space-y-1">
-                  <div className="h-20 rounded-lg" style={{
+              <h4 className="font-medium mb-3 text-sm sm:text-base">Color Palette</h4>
+              <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3">
+                <div className="space-y-1">
+                  <div className="h-14 sm:h-20 rounded-lg" style={{
                   backgroundColor: '#8B6F9F'
                 }} />
-                  <p className="text-xs font-medium cursor-pointer hover:text-ink/80 transition-colors" onClick={() => handleCopyHex('#8B6F9F')} title="Click to copy">
+                  <p className="text-xs font-medium cursor-pointer hover:text-ink/80 transition-colors truncate" onClick={() => handleCopyHex('#8B6F9F')} title="Click to copy">
                     #8B6F9F
                   </p>
                   <p className="text-xs text-ink/60">Primary</p>
                 </div>
-                <div className="flex-1 space-y-1">
-                  <div className="h-20 rounded-lg" style={{
+                <div className="space-y-1">
+                  <div className="h-14 sm:h-20 rounded-lg" style={{
                   backgroundColor: '#E8A87C'
                 }} />
-                  <p className="text-xs font-medium cursor-pointer hover:text-ink/80 transition-colors" onClick={() => handleCopyHex('#E8A87C')} title="Click to copy">
+                  <p className="text-xs font-medium cursor-pointer hover:text-ink/80 transition-colors truncate" onClick={() => handleCopyHex('#E8A87C')} title="Click to copy">
                     #E8A87C
                   </p>
                   <p className="text-xs text-ink/60">Accent</p>
                 </div>
-                <div className="flex-1 space-y-1">
-                  <div className="h-20 rounded-lg" style={{
+                <div className="space-y-1">
+                  <div className="h-14 sm:h-20 rounded-lg" style={{
                   backgroundColor: '#C9ADA7'
                 }} />
-                  <p className="text-xs font-medium cursor-pointer hover:text-ink/80 transition-colors" onClick={() => handleCopyHex('#C9ADA7')} title="Click to copy">
+                  <p className="text-xs font-medium cursor-pointer hover:text-ink/80 transition-colors truncate" onClick={() => handleCopyHex('#C9ADA7')} title="Click to copy">
                     #C9ADA7
                   </p>
                   <p className="text-xs text-ink/60">Highlight</p>
                 </div>
-                <div className="flex-1 space-y-1">
-                  <div className="h-20 rounded-lg" style={{
+                <div className="space-y-1">
+                  <div className="h-14 sm:h-20 rounded-lg" style={{
                   backgroundColor: '#2D3142'
                 }} />
-                  <p className="text-xs font-medium cursor-pointer hover:text-ink/80 transition-colors" onClick={() => handleCopyHex('#2D3142')} title="Click to copy">
+                  <p className="text-xs font-medium cursor-pointer hover:text-ink/80 transition-colors truncate" onClick={() => handleCopyHex('#2D3142')} title="Click to copy">
                     #2D3142
                   </p>
                   <p className="text-xs text-ink/60">Text</p>
                 </div>
-                <div className="flex-1 space-y-1">
-                  <div className="h-20 rounded-lg" style={{
+                <div className="space-y-1">
+                  <div className="h-14 sm:h-20 rounded-lg" style={{
                   backgroundColor: '#F4F4F4'
                 }} />
-                  <p className="text-xs font-medium cursor-pointer hover:text-ink/80 transition-colors" onClick={() => handleCopyHex('#F4F4F4')} title="Click to copy">
+                  <p className="text-xs font-medium cursor-pointer hover:text-ink/80 transition-colors truncate" onClick={() => handleCopyHex('#F4F4F4')} title="Click to copy">
                     #F4F4F4
                   </p>
                   <p className="text-xs text-ink/60">Neutral</p>
@@ -173,9 +173,9 @@ const Landing = () => {
             </div>
 
             <div>
-              <h4 className="font-medium mb-3">Typography</h4>
-              <p className="text-2xl font-semibold mb-1">Headings: Inter Semibold</p>
-              <p className="text-base">Body text: Inter Regular</p>
+              <h4 className="font-medium mb-3 text-sm sm:text-base">Typography</h4>
+              <p className="text-xl sm:text-2xl font-semibold mb-1">Headings: Inter Semibold</p>
+              <p className="text-sm sm:text-base">Body text: Inter Regular</p>
             </div>
           </BrandCard>
         </div>
@@ -183,10 +183,10 @@ const Landing = () => {
 
       {/* Bottom CTA */}
       <BottomWaveBackground>
-        <div className="text-center space-y-20 -mt-7">
+        <div className="text-center space-y-12 sm:space-y-20 -mt-4 sm:-mt-7">
           
           <Link to="/studio">
-            <Button size="lg" rounded="pill">
+            <Button size="lg" rounded="pill" className="w-full sm:w-auto">
               Open the Studio
             </Button>
           </Link>

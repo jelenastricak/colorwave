@@ -481,16 +481,16 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
   return (
     <>
       <BottomWaveBackground>
-        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 h-full">
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 sm:gap-8 h-full">
         {/* Left Panel - Form */}
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Logo and Navigation */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
-            <Link to="/" className="inline-flex items-center gap-0 bg-canvas/95 backdrop-blur-sm px-4 py-1.5 rounded-full shadow-sm border border-ink/25">
-              <img src={colorwaveLogo} alt="Colorwave Studio" className="h-14 w-14" />
-              <span className="text-2xl font-semibold text-ink leading-none -translate-y-0.5">Colorwave Studio</span>
+          <div className="flex flex-col gap-4 sm:gap-6">
+            <Link to="/" className="inline-flex items-center gap-0 bg-canvas/95 backdrop-blur-sm px-2 sm:px-4 py-1 sm:py-1.5 rounded-full shadow-sm border border-ink/25 self-start">
+              <img src={colorwaveLogo} alt="Colorwave Studio" className="h-10 w-10 sm:h-14 sm:w-14" />
+              <span className="text-lg sm:text-2xl font-semibold text-ink leading-none -translate-y-0.5">Colorwave Studio</span>
             </Link>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Link to="/saved">
                 <Button variant="outline" size="sm" rounded="pill">
                   View saved kits
