@@ -81,9 +81,9 @@ const Install = () => {
                 <p className="text-ink/70 mb-6">
                   Colorwave Studio is installed on your device. You can access it from your home screen.
                 </p>
-                <Link to="/studio">
-                  <Button>Go to Studio</Button>
-                </Link>
+                <Button asChild>
+                  <Link to="/studio">Go to Studio</Link>
+                </Button>
               </CardContent>
             </Card>
           ) : deferredPrompt ? (
@@ -152,9 +152,9 @@ const Install = () => {
                 <p className="text-ink/60 text-sm mb-4">
                   Already have the app? Open it from your home screen.
                 </p>
-                <Link to="/studio">
-                  <Button variant="ghost">Continue in Browser</Button>
-                </Link>
+                <Button asChild variant="ghost">
+                  <Link to="/studio">Continue in Browser</Link>
+                </Button>
               </div>
             </div>
           )}

@@ -114,16 +114,12 @@ const Saved = () => {
         <div className="space-y-8">
           <div className="space-y-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <Link to="/">
-              <Button variant="outline" size="sm" rounded="pill">
-                ← Back to home
-              </Button>
-            </Link>
-            <Link to="/gallery">
-              <Button variant="outline" size="sm" rounded="pill">
-                Browse Gallery
-              </Button>
-            </Link>
+            <Button asChild variant="outline" size="sm" rounded="pill">
+              <Link to="/">← Back to home</Link>
+            </Button>
+            <Button asChild variant="outline" size="sm" rounded="pill">
+              <Link to="/gallery">Browse Gallery</Link>
+            </Button>
           </div>
           
           <h1 className="text-2xl sm:text-3xl break-words">Your saved brand kits</h1>
@@ -131,9 +127,9 @@ const Saved = () => {
           {savedKits.length === 0 ? (
             <BrandCard className="text-center py-12 space-y-4">
               <p className="text-ink/70">No saved kits yet</p>
-              <Link to="/studio">
-                <Button rounded="pill">Create your first kit</Button>
-              </Link>
+              <Button asChild rounded="pill">
+                <Link to="/studio">Create your first kit</Link>
+              </Button>
             </BrandCard>
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
