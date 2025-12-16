@@ -14,6 +14,7 @@ import { LoadingSkeleton } from "@/components/LoadingSkeleton";
 import { exportAsCSS, exportAsTailwind } from "@/utils/exportColorFormats";
 import { extractColorsFromImage, extractColorsFromFile } from "@/utils/colorExtraction";
 import colorwaveLogo from "@/assets/colorwave-logo.png";
+import { PageTransition } from "@/components/PageTransition";
 
 interface BrandKit {
   id?: string;
@@ -479,7 +480,7 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
   };
 
   return (
-    <>
+    <PageTransition>
       <BottomWaveBackground>
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-6 sm:gap-8 h-full">
         {/* Left Panel - Form */}
@@ -1322,7 +1323,7 @@ Secondary CTA: ${brandKit.heroSection.secondaryCTA}
         </div>
       </div>
       </BottomWaveBackground>
-    </>
+    </PageTransition>
   );
 };
 

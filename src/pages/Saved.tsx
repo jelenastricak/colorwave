@@ -18,6 +18,7 @@ import { exportBrandKitAsPDF } from "@/utils/exportBrandKit";
 import { supabase } from "@/integrations/supabase/client";
 import { Share2 } from "lucide-react";
 import { Header } from "@/components/Header";
+import { PageTransition } from "@/components/PageTransition";
 
 interface SavedKit {
   id: string;
@@ -108,7 +109,7 @@ const Saved = () => {
   };
 
   return (
-    <>
+    <PageTransition>
       <Header />
       <SideWaveBackground>
         <div className="space-y-8">
@@ -204,7 +205,7 @@ const Saved = () => {
         </AlertDialogContent>
       </AlertDialog>
       </SideWaveBackground>
-    </>
+    </PageTransition>
   );
 };
 
