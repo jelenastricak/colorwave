@@ -5,6 +5,8 @@ import { BrandCard } from "@/components/ui/brand-card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
+import { PageTransition } from "@/components/PageTransition";
+
 const Landing = () => {
   const {
     toast
@@ -16,7 +18,7 @@ const Landing = () => {
       description: `${hex} copied to clipboard`
     });
   };
-  return <div className="min-h-screen">
+  return <PageTransition><div className="min-h-screen">
       <Header />
 
       {/* Hero Section */}
@@ -202,6 +204,6 @@ const Landing = () => {
           </div>
         </div>
       </BottomWaveBackground>
-    </div>;
+    </div></PageTransition>;
 };
 export default Landing;

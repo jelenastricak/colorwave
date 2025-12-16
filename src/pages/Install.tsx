@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Header } from "@/components/Header";
 import { BottomWaveBackground } from "@/components/backgrounds/BottomWaveBackground";
+import { PageTransition } from "@/components/PageTransition";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -57,6 +58,7 @@ const Install = () => {
   };
 
   return (
+    <PageTransition>
     <BottomWaveBackground>
       <div className="min-h-screen">
         <Header />
@@ -161,6 +163,7 @@ const Install = () => {
         </main>
       </div>
     </BottomWaveBackground>
+    </PageTransition>
   );
 };
 

@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Sparkles } from "lucide-react";
 import { Header } from "@/components/Header";
+import { PageTransition } from "@/components/PageTransition";
 
 interface GalleryKit {
   id: string;
@@ -82,7 +83,7 @@ const Gallery = () => {
   };
 
   return (
-    <>
+    <PageTransition>
       <Header />
       <TopWaveBackground>
         <div className="space-y-8">
@@ -194,7 +195,7 @@ const Gallery = () => {
         )}
       </div>
       </TopWaveBackground>
-    </>
+    </PageTransition>
   );
 };
 
