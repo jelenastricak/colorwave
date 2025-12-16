@@ -94,16 +94,12 @@ const Gallery = () => {
               <p className="text-ink/70">Discover inspiring brand identities created by our community</p>
             </div>
             <div className="flex gap-3">
-              <Link to="/">
-                <Button variant="outline" size="sm" rounded="pill">
-                  ← Home
-                </Button>
-              </Link>
-              <Link to="/studio">
-                <Button size="sm" rounded="pill">
-                  Create Your Own
-                </Button>
-              </Link>
+              <Button asChild variant="outline" size="sm" rounded="pill">
+                <Link to="/">← Home</Link>
+              </Button>
+              <Button asChild size="sm" rounded="pill">
+                <Link to="/studio">Create Your Own</Link>
+              </Button>
             </div>
           </div>
 
