@@ -31,16 +31,12 @@ const Landing = () => {
               Colorwave Studio generates a mini brand kit—palette, fonts, copy—without any design skills.
             </p>
             <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
-              <Link to="/studio" className="w-full sm:w-auto">
-                <Button size="lg" rounded="pill" className="w-full sm:w-auto">
-                  Launch Colorwave Studio
-                </Button>
-              </Link>
-              <Link to="/gallery" className="w-full sm:w-auto">
-                <Button variant="outline" size="lg" rounded="pill" className="w-full sm:w-auto">
-                  Browse Gallery
-                </Button>
-              </Link>
+              <Button asChild size="lg" rounded="pill" className="w-full sm:w-auto">
+                <Link to="/studio">Launch Colorwave Studio</Link>
+              </Button>
+              <Button asChild variant="outline" size="lg" rounded="pill" className="w-full sm:w-auto">
+                <Link to="/gallery">Browse Gallery</Link>
+              </Button>
             </div>
           </div>
 
